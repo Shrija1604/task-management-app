@@ -19,7 +19,6 @@ const TaskPage = () => {
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  // --- NEW STATE FOR SEARCH & SORT ---
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("newest");
 
@@ -30,12 +29,12 @@ const TaskPage = () => {
     category: "General",
   });
 
-  // FETCH TASKS
   const fetchTasks = async () => {
     try {
       setLoading(true);
       const data = await getTasks();
-      setTasks(data);
+      // Ensure tasks is always an array
+      setTasks(Array.isArray(data) ? data : []);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -52,16 +51,20 @@ const TaskPage = () => {
     }
   }, [navigate]);
 
-  // --- NEW LOGIC: FILTER & SORT ---
+  // --- FIXED FILTER & SORT LOGIC ---
   const displayedTasks = tasks
-    .filter((task) =>
-      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.category.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    .filter((task) => {
+      // Use ?? "" to handle undefined/null properties safely
+      const title = (task.title ?? "").toLowerCase();
+      const category = (task.category ?? "").toLowerCase();
+      const search = (searchTerm ?? "").toLowerCase();
+
+      return title.includes(search) || category.includes(search);
+    })
     .sort((a, b) => {
       if (sortBy === "newest") return new Date(b.createdAt) - new Date(a.createdAt);
       if (sortBy === "oldest") return new Date(a.createdAt) - new Date(b.createdAt);
-      if (sortBy === "title") return a.title.localeCompare(b.title);
+      if (sortBy === "title") return (a.title ?? "").localeCompare(b.title ?? "");
       return 0;
     });
 
@@ -101,10 +104,10 @@ const TaskPage = () => {
   const editHandler = (task) => {
     setEditingId(task._id);
     setFormData({
-      title: task.title,
-      description: task.description,
-      status: task.status,
-      category: task.category,
+      title: task.title ?? "",
+      description: task.description ?? "",
+      status: task.status ?? "pending",
+      category: task.category ?? "General",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -113,7 +116,6 @@ const TaskPage = () => {
     <>
       <Navbar />
       <div className="task-page">
-        {/* TASK FORM */}
         <form onSubmit={submitHandler} className="task-form">
           <h2>{editingId ? "Update Task" : "Create New Task"}</h2>
           <input type="text" name="title" placeholder="Task Title" value={formData.title} onChange={changeHandler} required />
@@ -129,7 +131,6 @@ const TaskPage = () => {
 
         <hr className="divider" />
 
-        {/* --- NEW SEARCH & SORT UI --- */}
         <div className="task-controls">
           <input 
             type="text" 
@@ -145,7 +146,6 @@ const TaskPage = () => {
           </select>
         </div>
 
-        {/* TASK LIST */}
         {loading ? (
           <Loader />
         ) : (

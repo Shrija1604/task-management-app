@@ -28,11 +28,11 @@ const LoginPage = () => {
         data.token
       );
 
-      console.log("Login Successful");
+      alert("Login Successful");
 
       navigate("/tasks");
     } catch (error) {
-      console.log("Invalid Credentials");
+      alert("Invalid Credentials");
     }
   };
 

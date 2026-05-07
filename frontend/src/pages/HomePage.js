@@ -16,7 +16,7 @@ const HomePage = () => {
 
         <div className="home-buttons">
           <Link to="/login">
-            <button>Get Started</button>
+            <button>Login</button>
           </Link>
 
           <Link to="/register">

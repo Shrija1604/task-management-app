@@ -210,6 +210,32 @@ GitHub: https://github.com/Shrija1604
 
 Project: Task Management Web Application (MERN Stack)
 
-📌 Conclusion
+# SmartTask Hub 🚀
+A modern, full-stack Task Management application built with the MERN stack.
 
+## 🔗 Live Links
+- **Frontend (Live Site):** [https://task-management-app-one-sepia.vercel.app](https://task-management-app-one-sepia.vercel.app)
+- **Backend (API):** [https://task-management-app-3v0i.onrender.com](https://task-management-app-3v0i.onrender.com)
+
+## ✨ Features
+- **User Auth:** Secure Login/Register with JWT.
+- **Task Management:** Create, Update, and Delete tasks.
+- **Search:** Instant filtering by task title or category.
+- **Sort:** Organize tasks by Newest, Oldest, or Alphabetical order.
+- **Responsive Design:** Glassmorphism UI that works on mobile and desktop.
+
+## 🛠️ Tech Stack
+- **Frontend:** React, Axios, CSS3 (Glassmorphism).
+- **Backend:** Node.js, Express.js, MongoDB, Mongoose.
+- **Security:** Bcrypt (hashing), JWT (authorization), CORS (secure cross-origin).
+
+## 🚀 Local Setup
+1. Clone the repo: `git clone <your-repo-url>`
+2. **Backend:** `cd backend`, `npm install`, add `.env` with `MONGO_URI`, then `npm start`.
+3. **Frontend:** `cd frontend`, `npm install`, `npm start`.
+
+## 🎥 Demo Video
+[Link to your Loom/YouTube/Drive video here]
+
+📌 Conclusion
 This project demonstrates a complete full-stack application using the MERN stack with authentication, database integration, and deployment. It provides a scalable foundation for real-world task management systems.
