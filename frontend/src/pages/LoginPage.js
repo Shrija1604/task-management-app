@@ -28,17 +28,18 @@ const LoginPage = () => {
         data.token
       );
 
-      alert("Login Successful");
+      console.log("Login Successful");
 
       navigate("/tasks");
     } catch (error) {
-      alert("Invalid Credentials");
+      console.log("Invalid Credentials");
     }
   };
 
   return (
     <div className="form-container">
       <form onSubmit={submitHandler} className="form-box">
+        <h1>Smart Task Hub</h1>
         <h2>Login</h2>
 
         <input
