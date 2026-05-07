@@ -13,7 +13,10 @@ const app = express();
 
 
 app.use(cors({
-  origin: "https://task-management-app-one-sepia.vercel.app",
+  origin: [
+    "http://localhost:3000", 
+    "https://task-management-app-one-sepia.vercel.app"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
