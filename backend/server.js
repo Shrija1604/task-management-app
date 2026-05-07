@@ -13,8 +13,7 @@ const app = express();
 
 
 app.use(cors({
-  // Replace this with your actual Vercel URL from your screenshot
-  origin: "https://task-management-app-three-kappa.vercel.app", 
+  origin: "https://task-management-app-one-sepia.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
