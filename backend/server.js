@@ -11,7 +11,15 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+
+app.use(cors({
+  // Replace this with your actual Vercel URL from your screenshot
+  origin: "https://task-management-app-three-kappa.vercel.app", 
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
+
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
