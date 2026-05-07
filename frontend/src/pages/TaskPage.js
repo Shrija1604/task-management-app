@@ -1,5 +1,3 @@
-// src/pages/TaskPage.js
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +8,7 @@ import TaskCard from "../components/TaskCard";
 import {
   getTasks,
   createTask,
- deleteTask,
+  deleteTask,
   updateTask,
 } from "../services/taskService";
 
@@ -19,8 +17,11 @@ const TaskPage = () => {
 
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [editingId, setEditingId] = useState(null);
+
+  // --- NEW STATE FOR SEARCH & SORT ---
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -33,23 +34,17 @@ const TaskPage = () => {
   const fetchTasks = async () => {
     try {
       setLoading(true);
-
       const data = await getTasks();
-
       setTasks(data);
-
       setLoading(false);
     } catch (error) {
       console.log(error);
-
       setLoading(false);
     }
   };
 
-  // PROTECT PAGE
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       navigate("/login");
     } else {
@@ -57,178 +52,113 @@ const TaskPage = () => {
     }
   }, [navigate]);
 
-  // HANDLE INPUTS
-  const changeHandler = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+  // --- NEW LOGIC: FILTER & SORT ---
+  const displayedTasks = tasks
+    .filter((task) =>
+      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.category.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortBy === "newest") return new Date(b.createdAt) - new Date(a.createdAt);
+      if (sortBy === "oldest") return new Date(a.createdAt) - new Date(b.createdAt);
+      if (sortBy === "title") return a.title.localeCompare(b.title);
+      return 0;
     });
+
+  const changeHandler = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // CREATE / UPDATE TASK
   const submitHandler = async (e) => {
     e.preventDefault();
-
     try {
-      // UPDATE
       if (editingId) {
         await updateTask(editingId, formData);
-
         alert("Task Updated Successfully");
-      }
-
-      // CREATE
-      else {
+      } else {
         await createTask(formData);
-
         alert("Task Added Successfully");
       }
-
-      // RESET FORM
-      setFormData({
-        title: "",
-        description: "",
-        status: "pending",
-        category: "General",
-      });
-
+      setFormData({ title: "", description: "", status: "pending", category: "General" });
       setEditingId(null);
-
       fetchTasks();
     } catch (error) {
       console.log(error);
-
       alert("Something went wrong");
     }
   };
 
-  // DELETE TASK
   const deleteHandler = async (id) => {
     try {
       await deleteTask(id);
-
       alert("Task Deleted Successfully");
-
       fetchTasks();
     } catch (error) {
       console.log(error);
     }
   };
 
-  // EDIT TASK
   const editHandler = (task) => {
     setEditingId(task._id);
-
     setFormData({
       title: task.title,
       description: task.description,
       status: task.status,
       category: task.category,
     });
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <>
       <Navbar />
-
       <div className="task-page">
-
         {/* TASK FORM */}
-        <form
-          onSubmit={submitHandler}
-          className="task-form"
-        >
-          <h2>
-            {editingId
-              ? "Update Task"
-              : "Create New Task"}
-          </h2>
-
-          <input
-            type="text"
-            name="title"
-            placeholder="Task Title"
-            value={formData.title}
-            onChange={changeHandler}
-            required
-          />
-
-          <textarea
-            name="description"
-            placeholder="Task Description"
-            value={formData.description}
-            onChange={changeHandler}
-            rows="4"
-          />
-
-          <select
-            name="status"
-            value={formData.status}
-            onChange={changeHandler}
-          >
-            <option value="pending">
-              Pending
-            </option>
-
-            <option value="in-progress">
-              In Progress
-            </option>
-
-            <option value="completed">
-              Completed
-            </option>
+        <form onSubmit={submitHandler} className="task-form">
+          <h2>{editingId ? "Update Task" : "Create New Task"}</h2>
+          <input type="text" name="title" placeholder="Task Title" value={formData.title} onChange={changeHandler} required />
+          <textarea name="description" placeholder="Task Description" value={formData.description} onChange={changeHandler} rows="4" />
+          <select name="status" value={formData.status} onChange={changeHandler}>
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
           </select>
-
-          <input
-            type="text"
-            name="category"
-            placeholder="Category"
-            value={formData.category}
-            onChange={changeHandler}
-          />
-
-          <button type="submit">
-            {editingId
-              ? "Update Task"
-              : "Add Task"}
-          </button>
+          <input type="text" name="category" placeholder="Category" value={formData.category} onChange={changeHandler} />
+          <button type="submit">{editingId ? "Update Task" : "Add Task"}</button>
         </form>
+
+        <hr className="divider" />
+
+        {/* --- NEW SEARCH & SORT UI --- */}
+        <div className="task-controls">
+          <input 
+            type="text" 
+            placeholder="Search by title or category..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-bar"
+          />
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="sort-dropdown">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title">A-Z Title</option>
+          </select>
+        </div>
 
         {/* TASK LIST */}
         {loading ? (
           <Loader />
         ) : (
           <div className="task-grid">
-            {tasks.length > 0 ? (
-              tasks.map((task) => (
-                <div
-                  key={task._id}
-                  className="task-wrapper"
-                >
-                  <TaskCard
-                    task={task}
-                    onDelete={deleteHandler}
-                  />
-
-                  <button
-                    className="edit-btn"
-                    onClick={() =>
-                      editHandler(task)
-                    }
-                  >
-                    Edit
-                  </button>
+            {displayedTasks.length > 0 ? (
+              displayedTasks.map((task) => (
+                <div key={task._id} className="task-wrapper">
+                  <TaskCard task={task} onDelete={deleteHandler} />
+                  <button className="edit-btn" onClick={() => editHandler(task)}>Edit</button>
                 </div>
               ))
             ) : (
-              <h2 className="no-task">
-                No Tasks Available
-              </h2>
+              <h2 className="no-task">No Tasks Found</h2>
             )}
           </div>
         )}
