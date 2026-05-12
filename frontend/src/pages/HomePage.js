@@ -427,54 +427,7 @@ const HomePage = () => {
           Making productivity accessible and enjoyable for everyone.
         </p>
 
-        {/* Social Links */}
-        <div
-        className="social-links"
-        style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: "20px",
-        marginTop: "25px",
-        flexWrap: "wrap",
-        }}
-      >
-      <button
-      type="button"
-      onClick={() => window.open("https://twitter.com", "_blank")}
-      className="social-btn"
-    >
-    Twitter
-    </button>
-
-    <button
-    type="button"
-    onClick={() => window.open("https://linkedin.com", "_blank")}
-    className="social-btn"
-  >
-    LinkedIn
-  </button>
-
-  <button
-    type="button"
-    onClick={() => window.open("https://instagram.com", "_blank")}
-    className="social-btn"
-  >
-    Instagram
-  </button>
-
-  <button
-    type="button"
-    onClick={() =>
-      window.open(
-        "https://github.com/Shrija1604/task-management-app",
-        "_blank"
-      )
-    }
-    className="social-btn"
-  >
-    GitHub
-  </button>
-</div>
+       
 
         {/* Contact */}
         <div
