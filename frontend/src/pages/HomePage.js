@@ -429,47 +429,52 @@ const HomePage = () => {
 
         {/* Social Links */}
         <div
-          className="social-links"
-          style={{
-            marginTop: "25px",
-            display: "flex",
-            justifyContent: "center",
-            gap: "20px",
-            flexWrap: "wrap",
-          }}
-        >
-          <a
-            href="https://twitter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Twitter
-          </a>
+        className="social-links"
+        style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: "20px",
+        marginTop: "25px",
+        flexWrap: "wrap",
+        }}
+      >
+      <button
+      type="button"
+      onClick={() => window.open("https://twitter.com", "_blank")}
+      className="social-btn"
+    >
+    Twitter
+    </button>
 
-          <a
-            href="https://linkedin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            LinkedIn
-          </a>
+    <button
+    type="button"
+    onClick={() => window.open("https://linkedin.com", "_blank")}
+    className="social-btn"
+  >
+    LinkedIn
+  </button>
 
-          <a
-            href="https://instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Instagram
-          </a>
+  <button
+    type="button"
+    onClick={() => window.open("https://instagram.com", "_blank")}
+    className="social-btn"
+  >
+    Instagram
+  </button>
 
-          <a
-            href="https://github.com/Shrija1604/task-management-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub
-          </a>
-        </div>
+  <button
+    type="button"
+    onClick={() =>
+      window.open(
+        "https://github.com/Shrija1604/task-management-app",
+        "_blank"
+      )
+    }
+    className="social-btn"
+  >
+    GitHub
+  </button>
+</div>
 
         {/* Contact */}
         <div
@@ -479,6 +484,7 @@ const HomePage = () => {
             textAlign: "center",
           }}
         >
+
           <div>Email: contact@smarttaskhub.com</div>
 
           <div style={{ marginTop: "10px" }}>
