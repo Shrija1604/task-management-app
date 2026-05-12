@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../services/authService";
 
-const LoginPage = () => {
+const AdminLoginPage = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -20,6 +20,13 @@ const LoginPage = () => {
     try {
       setLoading(true);
       const data = await loginUser(formData);
+      
+      if (data.role !== "admin") {
+        setError("Access denied. Admin credentials required.");
+        setLoading(false);
+        return;
+      }
+
       localStorage.setItem("token", data.token);
       localStorage.setItem(
         "user",
@@ -28,12 +35,11 @@ const LoginPage = () => {
           name: data.name,
           email: data.email,
           role: data.role,
-          profileImage: data.profileImage || ""
         })
       );
-      navigate(data.role === "admin" ? "/admin" : "/dashboard", { replace: true });
+      navigate("/admin", { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid email or password.");
+      setError(err.response?.data?.message || "Invalid admin credentials.");
     } finally {
       setLoading(false);
     }
@@ -43,28 +49,28 @@ const LoginPage = () => {
     <div className="auth-wrapper">
       <div className="auth-container">
         {/* Left Sidebar */}
-        <div className="auth-sidebar">
+        <div className="auth-sidebar" style={{ background: 'linear-gradient(160deg, rgba(31, 41, 55, 0.9) 0%, rgba(17, 24, 39, 0.9) 100%)' }}>
           <div className="auth-logo-container" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
             <img src="/logo.png" alt="Logo" style={{ width: '40px', height: '40px', borderRadius: '10px' }} />
-            <span style={{ fontWeight: '800', fontSize: '20px', color: 'var(--text-primary)' }}>Smart Task Hub</span>
+            <span style={{ fontWeight: '800', fontSize: '20px', color: '#fff' }}>Smart Task Hub</span>
           </div>
           <div style={{ textAlign: 'center', margin: '40px 0' }}>
             <img
-              src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=2072&auto=format&fit=crop"
-              alt="Login illustration"
-              style={{ width: "100%", maxWidth: "300px", marginBottom: '30px', borderRadius: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
+              src="https://storyset.com/about/security-amico.svg"
+              alt="Admin login illustration"
+              style={{ width: "100%", maxWidth: "300px", marginBottom: '30px' }}
             />
-            <h1 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--text-primary)' }}>Welcome Back</h1>
-            <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginTop: '10px' }}>
-              Sign in to manage your tasks and boost your productivity.
+            <h1 style={{ fontSize: '24px', fontWeight: '800', color: '#fff' }}>Admin Console</h1>
+            <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "14px", marginTop: '10px' }}>
+              Secure access for system administrators only.
             </p>
           </div>
         </div>
 
         {/* Right Form */}
         <div className="auth-form-side">
-          <h2>Login to your account</h2>
-          <p>Please enter your details</p>
+          <h2>Admin Login</h2>
+          <p>Please enter your administrative credentials</p>
 
           {error && (
             <div style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", color: "#f87171", padding: "12px 16px", borderRadius: "12px", marginTop: "20px", fontWeight: "600", fontSize: "14px" }}>
@@ -74,7 +80,7 @@ const LoginPage = () => {
 
           <form onSubmit={submitHandler} style={{ marginTop: "30px" }}>
             <div className="input-group">
-              <label>Email</label>
+              <label>Admin Email</label>
               <input
                 type="email"
                 name="email"
@@ -82,14 +88,11 @@ const LoginPage = () => {
                 onChange={changeHandler}
                 required
                 autoComplete="email"
-                placeholder="" 
+                placeholder=""
               />
             </div>
             <div className="input-group">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                <label style={{ margin: 0 }}>Password</label>
-                <Link to="/forgot-password" style={{ fontSize: "13px", color: "var(--accent-light)", fontWeight: "600" }}>Forgot password?</Link>
-              </div>
+              <label>Password</label>
               <input
                 type="password"
                 name="password"
@@ -101,17 +104,13 @@ const LoginPage = () => {
               />
             </div>
 
-            <button type="submit" className="auth-btn" disabled={loading} style={{ marginTop: "8px" }}>
-              {loading ? "Logging in..." : "Login"}
+            <button type="submit" className="auth-btn" disabled={loading} style={{ marginTop: "8px", background: 'linear-gradient(135deg, #374151, #111827)' }}>
+              {loading ? "Authenticating..." : "Login to Console"}
             </button>
           </form>
 
-          <p style={{ marginTop: "30px", textAlign: "center", fontSize: "14px", color: "var(--text-secondary)" }}>
-            Don't have an account? <Link to="/register" style={{ color: "var(--accent-light)", fontWeight: "700" }}>Register here</Link>
-          </p>
-          
-          <div style={{ marginTop: '20px', textAlign: 'center' }}>
-            <Link to="/admin-login" style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Admin Login</Link>
+          <div style={{ marginTop: '30px', textAlign: 'center' }}>
+            <Link to="/login" style={{ fontSize: '14px', color: 'var(--accent-light)', fontWeight: '600' }}>Back to Regular Login</Link>
           </div>
         </div>
       </div>
@@ -119,4 +118,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default AdminLoginPage;

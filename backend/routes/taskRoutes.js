@@ -4,15 +4,26 @@ const router = express.Router();
 const {
   createTask,
   getTasks,
+  getTaskStats,
   updateTask,
   deleteTask,
 } = require("../controllers/taskController");
 
 const { protect } = require("../middleware/authMiddleware");
 
-router.post("/", protect, createTask);
-router.get("/", protect, getTasks);
-router.put("/:id", protect, updateTask);
-router.delete("/:id", protect, deleteTask);
+// STATS ROUTE — must be before /:id to avoid conflict
+router.get("/stats", protect, getTaskStats);
+
+// CREATE TASK + GET TASKS
+router
+  .route("/")
+  .post(protect, createTask)
+  .get(protect, getTasks);
+
+// UPDATE TASK + DELETE TASK
+router
+  .route("/:id")
+  .put(protect, updateTask)
+  .delete(protect, deleteTask);
 
 module.exports = router;

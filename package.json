@@ -1,0 +1,15 @@
+{
+  "name": "task-management-app-root",
+  "version": "1.0.0",
+  "scripts": {
+    "frontend-install": "npm install --prefix frontend",
+    "frontend-build": "npm run build --prefix frontend",
+    "frontend-start": "npm start --prefix frontend",
+    "install-all": "npm install --prefix frontend && npm install --prefix backend",
+    "build": "npm run build --prefix frontend",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm start --prefix frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

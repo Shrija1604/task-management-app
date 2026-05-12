@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -13,6 +13,7 @@
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.15.0",
     "react-scripts": "5.0.1",
+    "task-management-app-root": "file:..",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

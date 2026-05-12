@@ -1,241 +1,110 @@
-# 📌 Task Management Web Application (MERN Stack)
+# 🚀 SmartTask Hub (MERN Stack)
 
-A full-stack Task Management System built using the MERN stack that allows users to securely manage their daily tasks with authentication, CRUD operations, filtering, sorting, and search functionality.
-
----
-
-## 🚀 Live Demo
-
-🔗 Frontend (Vercel): https://your-frontend-url.vercel.app  
-🔗 Backend (Render): https://your-backend-url.onrender.com  
-🔗 GitHub Repository: https://github.com/Shrija1604/task-management-app  
+SmartTask Hub is a professional-grade, full-stack task management platform built with the MERN stack. It features role-based dashboards, a visual calendar, dynamic themes, and production-optimized configurations.
 
 ---
 
-## 📖 Project Overview
+## 🔗 Live Links
 
-This project is a **full-stack task management web application** where users can:
-
-- Register and log in securely
-- Create, update, delete tasks
-- Filter and search tasks
-- Track task status (Pending / In Progress / Completed)
-- Manage personal productivity efficiently
-
-The system uses **JWT authentication** to secure APIs and ensures only authenticated users can access task operations.
+- **Frontend (Vercel):** [https://task-management-app-one-sepia.vercel.app](https://task-management-app-one-sepia.vercel.app)
+- **Backend (Render):** [https://task-management-app-3v0i.onrender.com](https://task-management-app-3v0i.onrender.com)
+- **GitHub Repository:** [https://github.com/Shrija1604/task-management-app](https://github.com/Shrija1604/task-management-app)
 
 ---
 
-## ✨ Features
+## ✨ Premium Features
 
-### 🔐 Authentication
-- User Registration
-- User Login
-- JWT Token-based Authentication
-- Protected Routes
-- Secure Logout
+### 🎨 Dynamic Themes
+- **Multi-Theme Support**: Choose from **Dark** (Default), **Light**, **Ocean**, and **Forest** palettes.
+- **Glassmorphism Design**: High-impact, modern UI with blurred backdrops and vibrant gradients.
 
-### 📝 Task Management
-- Create new tasks
-- View all tasks
-- Update existing tasks
-- Delete tasks
-- Mark task status
+### 📊 Intelligent Dashboards
+- **User Dashboard**: Real-time productivity metrics, completion rates, and priority alerts.
+- **Admin Command Center**: System-wide statistics (Users, Tasks, Global Completion Rate) and user management.
 
-### 🔍 Advanced Features
-- Task Filtering (Status-based)
-- Task Sorting (Newest, Oldest, Due Date)
-- Search Tasks by Title
-- Real-time UI updates
+### 📅 Visual Calendar
+- **Interactive View**: Visualize deadlines and task distribution on a monthly calendar grid.
+- **Priority Indicators**: Color-coded task dots for instant priority assessment.
 
-### 📱 UI Features
-- Responsive design (mobile + desktop)
-- Clean and modern UI
-- Interactive components
-- Form validation
+### 🔐 Secure Authentication
+- **Role-Based Access**: Specialized views for Administrators and standard Users.
+- **JWT Protection**: Secure API endpoints with token-based authorization.
+- **Secure Password Reset**: Full forgot/reset password flow with token-based verification.
+- **Profile Management**: Set and update profile photos directly from your device.
+
+---
+
+## 🔑 Admin Credentials
+
+For testing the Administrative Command Center:
+- **Email**: `admin@gmail.com`
+- **Password**: `Admin@123`
+
+---
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- React.js
-- React Router DOM
-- Axios
-- CSS / Bootstrap / Tailwind
-
-### Backend
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- JWT (Authentication)
-- bcrypt.js
-
-### Deployment
-- Frontend: Vercel  
-- Backend: Render  
-- Database: MongoDB Atlas  
-- Version Control: GitHub  
+- **Frontend:** React, Context API, Axios, CSS Variables.
+- **Backend:** Node.js, Express.js, MongoDB (Atlas), Mongoose.
+- **Security:** JWT, BcryptJS, Protected Routes, CORS Optimization.
+- **Deployment:** Vercel (Frontend), Render (Backend).
 
 ---
 
 ## 📁 Project Structure
+
+```text
 task-management-app/
-│
 ├── backend/
-│ ├── controllers/
-│ ├── models/
-│ ├── routes/
-│ ├── middleware/
-│ ├── config/
-│ ├── server.js
-│ └── .env.example
-│
-├── frontend/
-│ ├── src/
-│ │ ├── components/
-│ │ ├── pages/
-│ │ ├── services/
-│ │ ├── styles/
-│ │ └── App.js
-│ ├── public/
-│ └── .env.example
-│
-└── README.md
-
+│   ├── config/ (Database connection)
+│   ├── controllers/ (Business logic)
+│   ├── middleware/ (Auth & Admin guards)
+│   ├── models/ (MongoDB schemas)
+│   ├── routes/ (API endpoints)
+│   └── server.js (Main entry point)
+└── frontend/
+    ├── src/
+    │   ├── components/ (Reusable UI)
+    │   ├── context/ (Theme management)
+    │   ├── pages/ (Dashboard, Task, Auth)
+    │   ├── services/ (API interaction)
+    │   └── styles/ (Global theme system)
+    └── vercel.json (SPA routing config)
+```
 
 ---
 
-## ⚙️ Installation & Setup
+## ⚙️ Setup & Deployment
 
-### 🔧 Prerequisites
-- Node.js installed
-- MongoDB Atlas account
-- Git installed
+### Environment Variables
 
----
+#### Frontend (.env)
+```text
+REACT_APP_API_URL=https://task-management-app-3v0i.onrender.com/api
+```
 
-## 🖥️ Backend Setup
-
-```bash
-cd backend
-npm install
-Create .env file
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
+#### Backend (.env)
+```text
+MONGO_URI=your_mongodb_atlas_uri
+JWT_SECRET=your_secure_secret
+FRONTEND_URL=https://task-management-app-one-sepia.vercel.app
 PORT=5000
-Run backend server
-npm start
 
-Backend runs at:
+# Email Config (Optional for real emails)
+EMAIL_SERVICE=gmail
+EMAIL_USER=your_email
+EMAIL_PASS=your_app_password
+```
 
-http://localhost:5000
-🌐 Frontend Setup
-cd frontend
-npm install
-Create .env file
-REACT_APP_API_URL=http://localhost:5000
-Run frontend
-npm start
+---
 
-Frontend runs at:
+## 👨‍💻 Author
 
-http://localhost:3000
-🔗 API Endpoints
-Authentication
-Method	Endpoint	Description
-POST	/api/auth/register	Register new user
-POST	/api/auth/login	Login user
-Tasks
-Method	Endpoint	Description
-GET	/api/tasks	Get all tasks
-POST	/api/tasks	Create task
-PUT	/api/tasks/:id	Update task
-DELETE	/api/tasks/:id	Delete task
-🔐 Authentication Flow
-User registers or logs in
-Server generates JWT token
-Token is stored in frontend (localStorage)
-Token is sent in headers for protected routes
-Backend verifies token before granting access
-📸 Screenshots
+**Shrija1604**
+- GitHub: [@Shrija1604](https://github.com/Shrija1604)
 
-Add screenshots here before submission
+---
 
-Login Page
-Register Page
-Task Dashboard
-Add Task Form
-Filter/Search Feature
-🚀 Deployment
-Backend (Render)
-Connected GitHub repository
-Environment variables configured
-Auto-deployment enabled
-Frontend (Vercel)
-Connected GitHub repository
-Build command: npm run build
-Environment variable: REACT_APP_API_URL
-🧪 Testing
-
-The application was tested using:
-
-Postman (API testing)
-Browser DevTools (Network inspection)
-Manual UI testing
-Test Cases Covered:
-User authentication
-Task CRUD operations
-JWT token validation
-Protected routes
-Error handling
-⚠️ Error Handling
-Invalid login credentials handled
-Unauthorized access blocked
-API failure messages displayed
-Network error handling implemented
-🔮 Future Enhancements
-Drag & Drop task management
-Task reminders / notifications
-Role-based access (Admin/User)
-Dark mode UI
-Analytics dashboard
-Team collaboration features
-👨‍💻 Author
-
-Shrija1604
-
-GitHub: https://github.com/Shrija1604
-
-Project: Task Management Web Application (MERN Stack)
-
-# SmartTask Hub 🚀
-A modern, full-stack Task Management application built with the MERN stack.
-
-## 🔗 Live Links
-- **Frontend (Live Site):** [https://task-management-app-one-sepia.vercel.app](https://task-management-app-one-sepia.vercel.app)
-- **Backend (API):** [https://task-management-app-3v0i.onrender.com](https://task-management-app-3v0i.onrender.com)
-
-## ✨ Features
-- **User Auth:** Secure Login/Register with JWT.
-- **Task Management:** Create, Update, and Delete tasks.
-- **Search:** Instant filtering by task title or category.
-- **Sort:** Organize tasks by Newest, Oldest, or Alphabetical order.
-- **Responsive Design:** Glassmorphism UI that works on mobile and desktop.
-
-## 🛠️ Tech Stack
-- **Frontend:** React, Axios, CSS3 (Glassmorphism).
-- **Backend:** Node.js, Express.js, MongoDB, Mongoose.
-- **Security:** Bcrypt (hashing), JWT (authorization), CORS (secure cross-origin).
-
-## 🚀 Local Setup
-1. Clone the repo: `git clone <your-repo-url>`
-2. **Backend:** `cd backend`, `npm install`, add `.env` with `MONGO_URI`, then `npm start`.
-3. **Frontend:** `cd frontend`, `npm install`, `npm start`.
-
-## 🎥 Demo Video
-[Link to your Loom/YouTube/Drive video here]
-
-📌 Conclusion
-This project demonstrates a complete full-stack application using the MERN stack with authentication, database integration, and deployment. It provides a scalable foundation for real-world task management systems.
+📌 **Conclusion**: SmartTask Hub demonstrates a production-ready MERN application with a focus on UI excellence, role-based functionality, and scalable architecture.
