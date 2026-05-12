@@ -12,12 +12,6 @@ SmartTask Hub is a professional-grade, full-stack task management platform built
 
 ---
 
-## ✨ Premium Features
-
-### 🎨 Dynamic Themes
-- **Multi-Theme Support**: Choose from **Dark** (Default), **Light**, **Ocean**, and **Forest** palettes.
-- **Glassmorphism Design**: High-impact, modern UI with blurred backdrops and vibrant gradients.
-
 ### 📊 Intelligent Dashboards
 - **User Dashboard**: Real-time productivity metrics, completion rates, and priority alerts.
 - **Admin Command Center**: System-wide statistics (Users, Tasks, Global Completion Rate) and user management.
