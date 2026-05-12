@@ -129,12 +129,12 @@ const HomePage = () => {
         </p>
         
         <div className="social-links">
-          <a href="#" className="social-link">Twitter</a>
-          <a href="#" className="social-link">LinkedIn</a>
-          <a href="#" className="social-link">Instagram</a>
-          <a href="#" className="social-link">GitHub</a>
-        </div>
-        
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="https://github.com/Shrija1604/task-management-app" target="_blank" rel="noopener noreferrer">GitHub</a>
+          </div>
+
         <div className="contact-info">
           <div>Email: contact@smarttaskhub.com</div>
           <div style={{ marginTop: '10px' }}>
