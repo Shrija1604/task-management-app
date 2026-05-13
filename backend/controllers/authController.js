@@ -47,7 +47,7 @@ const registerUser = async (req, res) => {
       res.status(400).json({ message: "Invalid user data" });
     }
   } catch (error) {
-    console.error("Register Error:", error);
+    console.error("FULL REGISTER ERROR:", error);
     res.status(500).json({ message: error.message || "Server Error" });
   }
 };
@@ -234,6 +234,33 @@ const resetPassword = async (req, res) => {
   }
 };
 
+// @desc    Delete User Account
+// @route   DELETE /api/auth/account
+// @access  Private
+const deleteAccount = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.role === "admin") {
+      return res.status(400).json({ message: "Admin accounts cannot be deleted directly" });
+    }
+
+    // Delete all tasks associated with user
+    const Task = require("../models/Task");
+    await Task.deleteMany({ user: user._id });
+
+    await user.deleteOne();
+
+    res.status(200).json({ success: true, message: "Account deleted successfully" });
+  } catch (error) {
+    console.error("Delete Account Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -241,4 +268,5 @@ module.exports = {
   updateProfile,
   forgotPassword,
   resetPassword,
+  deleteAccount,
 };

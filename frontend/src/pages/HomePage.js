@@ -87,17 +87,35 @@ const HomePage = () => {
               </Link>
             </>
           ) : (
-            <Link
-              to={dashboardPath}
-              className="auth-btn"
-              style={{
-                padding: "10px 25px",
-                width: "auto",
-                textDecoration: "none",
-              }}
-            >
-              Go to Dashboard
-            </Link>
+            <>
+              <button
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("user");
+                  window.location.reload();
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "var(--text-secondary)",
+                  fontWeight: "700",
+                  cursor: "pointer"
+                }}
+              >
+                Logout
+              </button>
+              <Link
+                to={dashboardPath}
+                className="auth-btn"
+                style={{
+                  padding: "10px 25px",
+                  width: "auto",
+                  textDecoration: "none",
+                }}
+              >
+                Go to Dashboard
+              </Link>
+            </>
           )}
         </div>
       </nav>

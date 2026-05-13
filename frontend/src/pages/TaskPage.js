@@ -9,6 +9,7 @@ import {
   deleteTask,
   updateTask,
 } from "../services/taskService";
+import { getCategories } from "../services/categoryService";
 
 const EMPTY_FORM = {
   title: "",
@@ -21,6 +22,7 @@ const EMPTY_FORM = {
 
 const TaskPage = () => {
   const [tasks, setTasks] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -46,6 +48,9 @@ const TaskPage = () => {
 
   useEffect(() => {
     fetchTasks();
+    getCategories()
+      .then((cats) => setCategories(Array.isArray(cats) ? cats : []))
+      .catch(() => setCategories([]));
   }, [fetchTasks]);
 
   const displayedTasks = tasks
@@ -238,11 +243,21 @@ const TaskPage = () => {
             <div className="input-group">
               <label>Category</label>
               <select name="category" value={formData.category} onChange={changeHandler}>
-                <option value="General">General</option>
-                <option value="Work">Work</option>
-                <option value="Personal">Personal</option>
-                <option value="Fitness">Fitness</option>
-                <option value="Education">Education</option>
+                {categories.length > 0 ? (
+                  categories.map((cat) => (
+                    <option key={cat._id || cat.name} value={cat.name}>
+                      {cat.icon} {cat.name}
+                    </option>
+                  ))
+                ) : (
+                  <>
+                    <option value="General">📋 General</option>
+                    <option value="Work">💼 Work</option>
+                    <option value="Personal">🏠 Personal</option>
+                    <option value="Fitness">💪 Fitness</option>
+                    <option value="Education">📚 Education</option>
+                  </>
+                )}
               </select>
             </div>
             <div className="input-group">

@@ -8,6 +8,7 @@ const AdminLoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const changeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,10 +18,16 @@ const AdminLoginPage = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (!formData.email || !formData.password) {
+      setError("Please provide both email and password.");
+      return;
+    }
+
     try {
       setLoading(true);
       const data = await loginUser(formData);
-      
+
       if (data.role !== "admin") {
         setError("Access denied. Admin credentials required.");
         setLoading(false);
@@ -35,6 +42,7 @@ const AdminLoginPage = () => {
           name: data.name,
           email: data.email,
           role: data.role,
+          profileImage: data.profileImage || "",
         })
       );
       navigate("/admin", { replace: true });
@@ -49,21 +57,31 @@ const AdminLoginPage = () => {
     <div className="auth-wrapper">
       <div className="auth-container">
         {/* Left Sidebar */}
-        <div className="auth-sidebar" style={{ background: 'linear-gradient(160deg, rgba(31, 41, 55, 0.9) 0%, rgba(17, 24, 39, 0.9) 100%)' }}>
-          <div className="auth-logo-container" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
-            <img src="/logo.png" alt="Logo" style={{ width: '40px', height: '40px', borderRadius: '10px' }} />
-            <span style={{ fontWeight: '800', fontSize: '20px', color: '#fff' }}>Smart Task Hub</span>
+        <div className="auth-sidebar" style={{ background: "linear-gradient(160deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "30px" }}>
+            <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "linear-gradient(135deg, #374151, #111827)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
+              🔐
+            </div>
+            <span style={{ fontWeight: "800", fontSize: "20px", color: "#fff" }}>Smart Task Hub</span>
           </div>
-          <div style={{ textAlign: 'center', margin: '40px 0' }}>
-            <img
-              src="https://storyset.com/about/security-amico.svg"
-              alt="Admin login illustration"
-              style={{ width: "100%", maxWidth: "300px", marginBottom: '30px' }}
-            />
-            <h1 style={{ fontSize: '24px', fontWeight: '800', color: '#fff' }}>Admin Console</h1>
-            <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "14px", marginTop: '10px' }}>
-              Secure access for system administrators only.
+          <div style={{ textAlign: "center", margin: "40px 0", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div style={{ fontSize: "80px", marginBottom: "24px" }}>🛡️</div>
+            <h1 style={{ fontSize: "24px", fontWeight: "800", color: "#fff", marginBottom: "12px" }}>Admin Console</h1>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "14px", lineHeight: "1.7" }}>
+              Secure access for system administrators only. Unauthorized access is prohibited.
             </p>
+            <div style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "12px" }}>
+              {[
+                { icon: "👥", text: "Manage all users" },
+                { icon: "🏷️", text: "Control task categories" },
+                { icon: "📊", text: "View system-wide analytics" },
+              ].map((item) => (
+                <div key={item.text} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 14px", background: "rgba(255,255,255,0.06)", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  <span style={{ fontSize: "16px" }}>{item.icon}</span>
+                  <span style={{ fontSize: "14px", fontWeight: "600", color: "rgba(255,255,255,0.7)" }}>{item.text}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -78,7 +96,7 @@ const AdminLoginPage = () => {
             </div>
           )}
 
-          <form onSubmit={submitHandler} style={{ marginTop: "30px" }}>
+          <form onSubmit={submitHandler} style={{ marginTop: "60px" }}>
             <div className="input-group">
               <label>Admin Email</label>
               <input
@@ -88,29 +106,43 @@ const AdminLoginPage = () => {
                 onChange={changeHandler}
                 required
                 autoComplete="email"
-                placeholder=""
+                placeholder="Enter your email address"
               />
             </div>
             <div className="input-group">
               <label>Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={changeHandler}
-                required
-                autoComplete="current-password"
-                placeholder=""
-              />
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={changeHandler}
+                  required
+                  autoComplete="current-password"
+                  placeholder="Enter admin password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{ position: "absolute", right: "14px", top: "60%", transform: "translateY(-50%)", background: "none", border: "none", color: "var(--text-muted)", cursor: "pointer", padding: "0", width: "auto", fontSize: "16px" }}
+                >
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
+              </div>
             </div>
 
-            <button type="submit" className="auth-btn" disabled={loading} style={{ marginTop: "8px", background: 'linear-gradient(135deg, #374151, #111827)' }}>
+            <button
+              type="submit"
+              className="auth-btn"
+              disabled={loading}
+              style={{ marginTop: "8px", background: "linear-gradient(135deg, #374151, #111827)" }}
+            >
               {loading ? "Authenticating..." : "Login to Console"}
             </button>
           </form>
 
-          <div style={{ marginTop: '30px', textAlign: 'center' }}>
-            <Link to="/login" style={{ fontSize: '14px', color: 'var(--accent-light)', fontWeight: '600' }}>Back to Regular Login</Link>
+          <div style={{ marginTop: "40px", textAlign: "center" }}>
+            <Link to="/login" style={{ fontSize: "14px", color: "var(--accent-light)", fontWeight: "600" }}>← Back to Regular Login</Link>
           </div>
         </div>
       </div>

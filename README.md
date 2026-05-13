@@ -15,9 +15,12 @@ SmartTask Hub is a professional-grade, full-stack task management platform built
 ### 📊 Intelligent Dashboards
 - **User Dashboard**: Real-time productivity metrics, completion rates, and priority alerts.
 - **Admin Command Center**: System-wide statistics (Users, Tasks, Global Completion Rate) and user management.
+- **Role-Based Access**: Specialized views for standard users and administrators.
 
 ### 📅 Visual Calendar
 - **Interactive View**: Visualize deadlines and task distribution on a monthly calendar grid.
+- **Task Management**: Create, view, and manage tasks directly from the calendar interface.
+
 - **Priority Indicators**: Color-coded task dots for instant priority assessment.
 
 ### 🔐 Secure Authentication

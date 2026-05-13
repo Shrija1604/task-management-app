@@ -13,6 +13,8 @@ const RegisterPage = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const changeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,6 +24,11 @@ const RegisterPage = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (!formData.name.trim()) {
+      setError("Full name is required.");
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
@@ -48,25 +55,46 @@ const RegisterPage = () => {
     }
   };
 
+  const passwordStrength = () => {
+    const p = formData.password;
+    if (!p) return null;
+    if (p.length < 6) return { label: "Too short", color: "#ef4444", pct: 25 };
+    if (p.length < 8) return { label: "Weak", color: "#f59e0b", pct: 50 };
+    if (/[A-Z]/.test(p) && /[0-9]/.test(p)) return { label: "Strong", color: "#10b981", pct: 100 };
+    return { label: "Medium", color: "#6366f1", pct: 75 };
+  };
+
+  const strength = passwordStrength();
+
   return (
     <div className="auth-wrapper">
       <div className="auth-container">
         {/* Left Sidebar */}
         <div className="auth-sidebar">
-          <div className="auth-logo-container" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
-            <img src="/logo.png" alt="Logo" style={{ width: '40px', height: '40px', borderRadius: '10px' }} />
-            <span style={{ fontWeight: '800', fontSize: '20px', color: 'var(--text-primary)' }}>Smart Task Hub</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "30px" }}>
+            <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
+              ✅
+            </div>
+            <span style={{ fontWeight: "800", fontSize: "20px", color: "var(--text-primary)" }}>Smart Task Hub</span>
           </div>
-          <div style={{ textAlign: 'center', margin: '40px 0' }}>
-            <img
-              src="https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?q=80&w=2070&auto=format&fit=crop"
-              alt="Register illustration"
-              style={{ width: "100%", maxWidth: "300px", marginBottom: '30px', borderRadius: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
-            />
-            <h1 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--text-primary)' }}>Create Account</h1>
-            <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginTop: '10px' }}>
-              Start organizing your tasks and boost your productivity today.
+          <div style={{ textAlign: "center", margin: "40px 0", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div style={{ fontSize: "80px", marginBottom: "24px" }}>🎯</div>
+            <h1 style={{ fontSize: "24px", fontWeight: "800", color: "var(--text-primary)", marginBottom: "12px" }}>Create Account</h1>
+            <p style={{ color: "var(--text-secondary)", fontSize: "14px", lineHeight: "1.7" }}>
+              Join Smart Task Hub and start organizing your work and life effectively.
             </p>
+            <div style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "12px" }}>
+              {[
+                { icon: "🆓", text: "Completely free to use" },
+                { icon: "🔒", text: "Your data stays private" },
+                { icon: "⚡", text: "Get started in seconds" },
+              ].map((item) => (
+                <div key={item.text} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 14px", background: "rgba(255,255,255,0.06)", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+                  <span style={{ fontSize: "16px" }}>{item.icon}</span>
+                  <span style={{ fontSize: "14px", fontWeight: "600", color: "var(--text-secondary)" }}>{item.text}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -91,7 +119,7 @@ const RegisterPage = () => {
                 onChange={changeHandler}
                 required
                 autoComplete="name"
-                placeholder=""
+                placeholder="Enter your Name"
               />
             </div>
             <div className="input-group">
@@ -103,38 +131,70 @@ const RegisterPage = () => {
                 onChange={changeHandler}
                 required
                 autoComplete="email"
-                placeholder=""
+                placeholder="Enter your email address"
               />
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
               <div className="input-group">
                 <label>Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={changeHandler}
-                  required
-                  autoComplete="new-password"
-                  placeholder=""
-                />
+                <div style={{ position: "relative" }}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={changeHandler}
+                    required
+                    autoComplete="new-password"
+                    placeholder="Min 6 char"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "var(--text-muted)", cursor: "pointer", padding: "0", width: "auto", fontSize: "14px" }}
+                  >
+                    {showPassword ? "🙈" : "👁️"}
+                  </button>
+                </div>
+                {strength && (
+                  <div style={{ marginTop: "6px" }}>
+                    <div style={{ height: "4px", background: "rgba(255,255,255,0.1)", borderRadius: "999px", overflow: "hidden" }}>
+                      <div style={{ width: `${strength.pct}%`, height: "100%", background: strength.color, borderRadius: "999px", transition: "width 0.3s" }} />
+                    </div>
+                    <span style={{ fontSize: "11px", color: strength.color, fontWeight: "700", marginTop: "4px", display: "block" }}>{strength.label}</span>
+                  </div>
+                )}
               </div>
               <div className="input-group">
                 <label>Confirm Password</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={changeHandler}
-                  required
-                  autoComplete="new-password"
-                  placeholder=""
-                />
+                <div style={{ position: "relative" }}>
+                  <input
+                    type={showConfirm ? "text" : "password"}
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={changeHandler}
+                    required
+                    autoComplete="new-password"
+                    placeholder="Repeat password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm(!showConfirm)}
+                    style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "var(--text-muted)", cursor: "pointer", padding: "0", width: "auto", fontSize: "14px" }}
+                  >
+                    {showConfirm ? "🙈" : "👁️"}
+                  </button>
+                </div>
+                {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+                  <span style={{ fontSize: "11px", color: "#ef4444", fontWeight: "700", marginTop: "4px", display: "block" }}>Passwords don't match</span>
+                )}
+                {formData.confirmPassword && formData.password === formData.confirmPassword && (
+                  <span style={{ fontSize: "11px", color: "#10b981", fontWeight: "700", marginTop: "4px", display: "block" }}>✓ Passwords match</span>
+                )}
               </div>
             </div>
 
             <button type="submit" className="auth-btn" disabled={loading} style={{ marginTop: "8px" }}>
-              {loading ? "Creating account..." : "Register"}
+              {loading ? "Creating account..." : "Create Account"}
             </button>
           </form>
 

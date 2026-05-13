@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { updateProfile } from "../services/authService";
+import { updateProfile, deleteAccount } from "../services/authService";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user") || "{}"));
   const [formData, setFormData] = useState({
     name: user.name || "",
@@ -70,9 +72,32 @@ const ProfilePage = () => {
       window.location.reload(); 
     } catch (error) {
       console.error(error);
-      setErrorMsg(error.response?.data?.message || "Failed to update profile.");
+      const msg = error.response?.data?.message || error.message || "Failed to update profile.";
+      setErrorMsg(msg);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const logoutHandler = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you absolutely sure you want to delete your account? This action cannot be undone and all your tasks will be permanently removed.")) {
+      try {
+        setLoading(true);
+        await deleteAccount();
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+      } catch (err) {
+        setErrorMsg(err.response?.data?.message || "Failed to delete account.");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -198,6 +223,60 @@ const ProfilePage = () => {
             {loading ? "Updating..." : "Save Profile Changes"}
           </button>
         </form>
+
+        {/* Action Buttons Section */}
+        <div style={{ marginTop: '30px', display: 'flex', gap: '15px' }}>
+           <button 
+            onClick={logoutHandler}
+            style={{ 
+              flex: 1,
+              background: 'rgba(255,255,255,0.05)', 
+              color: 'var(--text-primary)', 
+              border: '1px solid var(--border-color)', 
+              padding: '12px', 
+              borderRadius: '12px',
+              fontWeight: '700',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Logout Session
+          </button>
+        </div>
+
+        {/* Delete Account Section */}
+        <div style={{ marginTop: '40px', paddingTop: '30px', borderTop: '1px solid var(--border-color)', textAlign: 'center' }}>
+          <h3 style={{ fontSize: '16px', color: 'var(--danger)', fontWeight: '700', marginBottom: '10px' }}>Danger Zone</h3>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '20px' }}>
+            Once you delete your account, there is no going back. Please be certain.
+          </p>
+          <button 
+            onClick={handleDeleteAccount}
+            style={{ 
+              background: 'transparent', 
+              color: 'var(--danger)', 
+              border: '1px solid var(--danger)', 
+              padding: '10px 20px', 
+              borderRadius: '10px',
+              fontWeight: '600',
+              fontSize: '14px',
+              width: 'auto',
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={(e) => e.target.style.background = 'rgba(239, 68, 68, 0.1)'}
+            onMouseOut={(e) => e.target.style.background = 'transparent'}
+          >
+            Delete My Account
+          </button>
+        </div>
       </div>
     </div>
   );
