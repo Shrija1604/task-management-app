@@ -71,17 +71,17 @@ const RegisterPage = () => {
       <div className="auth-container">
         {/* Left Sidebar */}
         <div className="auth-sidebar">
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "30px" }}>
-            <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
-              ✅
+          <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "30px" }}>
+            <div className="auth-logo-box">
+              <img src="/auth-logo.png" alt="Logo" />
             </div>
-            <span style={{ fontWeight: "800", fontSize: "20px", color: "var(--text-primary)" }}>Smart Task Hub</span>
+            <span style={{ fontWeight: "800", fontSize: "22px", color: "var(--text-primary)" }}>Smart Task Hub</span>
           </div>
-          <div style={{ textAlign: "center", margin: "40px 0", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ fontSize: "80px", marginBottom: "24px" }}>🎯</div>
-            <h1 style={{ fontSize: "24px", fontWeight: "800", color: "var(--text-primary)", marginBottom: "12px" }}>Create Account</h1>
-            <p style={{ color: "var(--text-secondary)", fontSize: "14px", lineHeight: "1.7" }}>
-              Join Smart Task Hub and start organizing your work and life effectively.
+          <div style={{ textAlign: "center", margin: "20px 0", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <img src="/register-side.png" alt="Register Illustration" className="auth-sidebar-img" />
+            <h1 style={{ fontSize: "26px", fontWeight: "800", color: "var(--text-primary)", marginBottom: "12px" }}>Create Account</h1>
+            <p style={{ color: "var(--text-secondary)", fontSize: "14px", lineHeight: "1.7", maxWidth: "340px", margin: "0 auto" }}>
+              Start organizing your tasks and boost your productivity today.
             </p>
             <div style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "12px" }}>
               {[

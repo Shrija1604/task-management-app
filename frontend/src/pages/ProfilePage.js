@@ -224,31 +224,32 @@ const ProfilePage = () => {
           </button>
         </form>
 
-        {/* Action Buttons Section */}
-        <div style={{ marginTop: '30px', display: 'flex', gap: '15px' }}>
+        <div style={{ marginTop: '30px' }}>
            <button 
             onClick={logoutHandler}
             style={{ 
-              flex: 1,
-              background: 'rgba(255,255,255,0.05)', 
-              color: 'var(--text-primary)', 
-              border: '1px solid var(--border-color)', 
-              padding: '12px', 
-              borderRadius: '12px',
-              fontWeight: '700',
-              fontSize: '14px',
+              width: '100%',
+              background: 'rgba(239, 68, 68, 0.08)', 
+              color: '#f87171', 
+              border: '1px solid rgba(239, 68, 68, 0.2)', 
+              padding: '16px', 
+              borderRadius: '16px',
+              fontWeight: '800',
+              fontSize: '15px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px'
+              gap: '12px',
+              transition: 'all 0.3s'
             }}
+            className="profile-logout-btn"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
-            Logout Session
+            Logout Current Session
           </button>
         </div>
 

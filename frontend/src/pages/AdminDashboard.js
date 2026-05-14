@@ -100,6 +100,18 @@ const AdminDashboard = () => {
     }
   };
 
+  const deleteTaskHandler = async (id) => {
+    if (window.confirm("Are you sure you want to delete this task? This cannot be undone.")) {
+      try {
+        await API.delete(`/admin/tasks/${id}`);
+        setTasks((prev) => prev.filter((t) => t._id !== id));
+        setData((prev) => ({ ...prev, totalTasks: prev.totalTasks - 1 }));
+      } catch (err) {
+        alert(err.response?.data?.message || "Failed to delete task");
+      }
+    }
+  };
+
   const handleCatSubmit = async (e) => {
     e.preventDefault();
     setCatError("");
@@ -193,6 +205,7 @@ const AdminDashboard = () => {
     { id: "users", label: "👥 User Management" },
     { id: "tasks", label: "📋 System Activity" },
     { id: "categories", label: "🏷️ Categories" },
+    { id: "insights", label: "📊 System Insights" },
   ];
 
   return (
@@ -325,7 +338,7 @@ const AdminDashboard = () => {
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ borderBottom: "1px solid var(--border-color)" }}>
-                    {["Task", "Assigned To", "Status", "Priority", "Category", "Created At"].map((h) => (
+                    {["Task", "Assigned To", "Status", "Priority", "Category", "Actions"].map((h) => (
                       <th key={h} style={{ padding: "12px 14px", textAlign: "left", fontSize: "12px", fontWeight: "700", color: "var(--text-muted)", textTransform: "uppercase" }}>{h}</th>
                     ))}
                   </tr>
@@ -359,8 +372,14 @@ const AdminDashboard = () => {
                           </span>
                         </td>
                         <td style={{ padding: "14px", color: "var(--text-secondary)", fontSize: "13px" }}>{t.category || "General"}</td>
-                        <td style={{ padding: "14px", color: "var(--text-secondary)", fontSize: "12px" }}>
-                          {new Date(t.createdAt).toLocaleDateString()}
+                        <td style={{ padding: "14px" }}>
+                          <button
+                            onClick={() => deleteTaskHandler(t._id)}
+                            className="photo-upload-btn"
+                            style={{ background: "rgba(239, 68, 68, 0.1)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)", padding: "4px 10px", fontSize: "11px" }}
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))
@@ -550,6 +569,61 @@ const AdminDashboard = () => {
                 )}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ── SYSTEM INSIGHTS TAB ── */}
+      {activeTab === "insights" && (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+          {/* Status Breakdown */}
+          <div className="stat-card">
+            <h2 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "24px" }}>System-wide Status</h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {[
+                { label: "Done", count: data?.breakdown?.status?.completed ?? 0, color: "#10b981" },
+                { label: "In Progress", count: data?.breakdown?.status?.inProgress ?? 0, color: "#6366f1" },
+                { label: "Pending", count: data?.breakdown?.status?.pending ?? 0, color: "#f59e0b" },
+              ].map((s) => {
+                const pct = data?.totalTasks > 0 ? Math.round((s.count / data.totalTasks) * 100) : 0;
+                return (
+                  <div key={s.label}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                      <span style={{ fontWeight: "700", fontSize: "14px", color: s.color }}>{s.label}</span>
+                      <span style={{ fontWeight: "600", fontSize: "13px", color: "var(--text-secondary)" }}>{s.count} ({pct}%)</span>
+                    </div>
+                    <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: "999px", height: "10px", overflow: "hidden" }}>
+                      <div style={{ width: `${pct}%`, height: "100%", background: s.color, transition: "width 1s ease" }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Priority Breakdown */}
+          <div className="stat-card">
+            <h2 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "24px" }}>System-wide Priorities</h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {[
+                { label: "High", count: data?.breakdown?.priority?.High ?? 0, color: "#ef4444" },
+                { label: "Medium", count: data?.breakdown?.priority?.Medium ?? 0, color: "#f59e0b" },
+                { label: "Low", count: data?.breakdown?.priority?.Low ?? 0, color: "#10b981" },
+              ].map((s) => {
+                const pct = data?.totalTasks > 0 ? Math.round((s.count / data.totalTasks) * 100) : 0;
+                return (
+                  <div key={s.label}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                      <span style={{ fontWeight: "700", fontSize: "14px", color: s.color }}>{s.label} Priority</span>
+                      <span style={{ fontWeight: "600", fontSize: "13px", color: "var(--text-secondary)" }}>{s.count} ({pct}%)</span>
+                    </div>
+                    <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: "999px", height: "10px", overflow: "hidden" }}>
+                      <div style={{ width: `${pct}%`, height: "100%", background: s.color, transition: "width 1s ease" }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

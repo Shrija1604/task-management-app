@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const CalendarView = ({ tasks = [] }) => {
+const CalendarView = ({ tasks = [], categories = [] }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
@@ -39,6 +39,11 @@ const CalendarView = ({ tasks = [] }) => {
     Low: "#10b981",
   };
 
+  const getCategoryColor = (catName) => {
+    const cat = categories.find(c => c.name === catName);
+    return cat ? cat.color : "var(--text-secondary)";
+  };
+
   return (
     <div className="calendar-container">
       <div className="calendar-header">
@@ -69,18 +74,27 @@ const CalendarView = ({ tasks = [] }) => {
               {day && (
                 <>
                   <div className="day-number" style={isToday ? { color: 'var(--accent-primary)' } : {}}>{day}</div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    {dayTasks.map(task => (
-                      <div 
-                        key={task._id} 
-                        className="calendar-task-tag"
-                        style={{ background: `${priorityColors[task.priority]}15`, color: priorityColors[task.priority], borderLeft: `3px solid ${priorityColors[task.priority]}` }}
-                        title={task.title}
-                      >
-                        {task.title}
-                      </div>
-                    ))}
-                  </div>
+                    {dayTasks.map(task => {
+                      const catColor = getCategoryColor(task.category);
+                      const isDone = task.status === 'Done';
+                      return (
+                        <div 
+                          key={task._id} 
+                          className={`calendar-task-tag ${isDone ? 'completed' : ''}`}
+                          style={{ 
+                            background: isDone ? 'rgba(16,185,129,0.08)' : `${catColor}12`, 
+                            color: isDone ? '#10b981' : catColor, 
+                            borderLeft: `3px solid ${isDone ? '#10b981' : catColor}`,
+                            opacity: isDone ? 0.7 : 1,
+                            textDecoration: isDone ? 'line-through' : 'none'
+                          }}
+                          title={`${task.title} (${task.priority} priority)`}
+                        >
+                          <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: priorityColors[task.priority], flexShrink: 0 }} />
+                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{task.title}</span>
+                        </div>
+                      );
+                    })}
                 </>
               )}
             </div>

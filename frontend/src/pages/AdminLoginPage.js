@@ -57,18 +57,30 @@ const AdminLoginPage = () => {
     <div className="auth-wrapper">
       <div className="auth-container">
         {/* Left Sidebar */}
-        <div className="auth-sidebar" style={{ background: "linear-gradient(160deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "30px" }}>
-            <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "linear-gradient(135deg, #374151, #111827)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>
-              🔐
+        <div className="auth-sidebar" style={{ background: "linear-gradient(160deg, #1e293b 0%, #0f172a 100%)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "30px" }}>
+            <div className="auth-logo-box">
+              <img src="/auth-logo.png" alt="Logo" />
             </div>
-            <span style={{ fontWeight: "800", fontSize: "20px", color: "#fff" }}>Smart Task Hub</span>
+            <span style={{ fontWeight: "800", fontSize: "22px", color: "#fff" }}>Smart Task Hub</span>
           </div>
-          <div style={{ textAlign: "center", margin: "40px 0", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ fontSize: "80px", marginBottom: "24px" }}>🛡️</div>
-            <h1 style={{ fontSize: "24px", fontWeight: "800", color: "#fff", marginBottom: "12px" }}>Admin Console</h1>
-            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "14px", lineHeight: "1.7" }}>
-              Secure access for system administrators only. Unauthorized access is prohibited.
+          <div style={{ textAlign: "center", margin: "20px 0", flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div style={{ margin: "0 auto 30px" }}>
+              <img
+                src="/register-side.png"
+                alt="Admin Security"
+                style={{
+                  width: "100%",
+                  maxWidth: "340px",
+                  borderRadius: "24px",
+                  boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
+                  filter: "brightness(0.9) contrast(1.1)"
+                }}
+              />
+            </div>
+            <h1 style={{ fontSize: "26px", fontWeight: "800", color: "#fff", marginBottom: "12px" }}>Admin Console</h1>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "14px", lineHeight: "1.7", maxWidth: "340px", margin: "0 auto" }}>
+              Secure access for system administrators.
             </p>
             <div style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "12px" }}>
               {[

@@ -19,7 +19,7 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  // Admin gets a focused nav, regular users get the full nav
+
   const userNavItems = [
     {
       name: "Home",
@@ -68,6 +68,21 @@ const Navbar = () => {
       name: "Admin Panel",
       path: "/admin",
       icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
+    },
+    {
+      name: "Tasks",
+      path: "/tasks",
+      icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01",
+    },
+    {
+      name: "Calendar",
+      path: "/calendar",
+      icon: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z",
+    },
+    {
+      name: "Statistics",
+      path: "/statistics",
+      icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
     },
     {
       name: "Profile",
@@ -140,7 +155,7 @@ const Navbar = () => {
       </nav>
 
       {/* Footer / Logout */}
-      <div className="sidebar-footer">
+      <div className="sidebar-footer" style={{ borderTop: "1px solid var(--border-color)", padding: "16px", background: "var(--sidebar-bg)" }}>
         <button onClick={toggleTheme} className="logout-btn" style={{ marginBottom: "10px" }}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             {theme === "dark" ? (
@@ -167,20 +182,17 @@ const Navbar = () => {
               logoutHandler();
             }
           }}
-          className="logout-btn"
-          style={{
-            marginTop: "5px",
-            color: "#f87171",
-            background: "rgba(239, 68, 68, 0.05)",
-            border: "1px solid rgba(239, 68, 68, 0.2)",
-          }}
+          className="logout-btn main-logout"
+          style={{ marginTop: "12px" }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
-          <span style={{ fontWeight: "700" }}>Logout Session</span>
+          <div className="logout-icon-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </div>
+          <span>Logout Session</span>
         </button>
       </div>
     </div>

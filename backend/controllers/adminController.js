@@ -47,6 +47,12 @@ const getDashboardStats = async (req, res) => {
     const userCount = await User.countDocuments();
     const taskCount = await Task.countDocuments();
     const completedTasks = await Task.countDocuments({ status: "Done" });
+    const inProgressTasks = await Task.countDocuments({ status: "In Progress" });
+    const pendingTasks = await Task.countDocuments({ status: "Pending" });
+
+    const highPriority = await Task.countDocuments({ priority: "High" });
+    const mediumPriority = await Task.countDocuments({ priority: "Medium" });
+    const lowPriority = await Task.countDocuments({ priority: "Low" });
 
     // Get all users with their task counts
     const users = await User.find({}).select("-password");
@@ -76,6 +82,10 @@ const getDashboardStats = async (req, res) => {
           ? ((completedTasks / taskCount) * 100).toFixed(1)
           : 0,
       users: usersWithStats,
+      breakdown: {
+        status: { completed: completedTasks, inProgress: inProgressTasks, pending: pendingTasks },
+        priority: { High: highPriority, Medium: mediumPriority, Low: lowPriority }
+      }
     });
   } catch (error) {
     console.error("Get Dashboard Stats Error:", error);
@@ -99,4 +109,21 @@ const getSystemTasks = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, deleteUser, getDashboardStats, getSystemTasks };
+// @desc    Delete any task in the system
+// @route   DELETE /api/admin/tasks/:id
+// @access  Private/Admin
+const deleteSystemTask = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    await task.deleteOne();
+    res.json({ message: "Task deleted by administrator" });
+  } catch (error) {
+    console.error("Delete System Task Error:", error);
+    res.status(500).json({ message: "Failed to delete task" });
+  }
+};
+
+module.exports = { getUsers, deleteUser, getDashboardStats, getSystemTasks, deleteSystemTask };

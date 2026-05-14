@@ -184,6 +184,17 @@ a {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 10px;
 }
 
 .nav-link {
@@ -222,9 +233,9 @@ a {
 }
 
 .sidebar-footer {
-  margin-top: 8px;
+  margin-top: auto;
   border-top: 1px solid var(--border-color);
-  padding-top: 16px;
+  padding: 16px 0 8px;
 }
 
 .logout-btn {
@@ -235,17 +246,77 @@ a {
   padding: 12px 14px;
   border-radius: 14px;
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   color: var(--text-secondary);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .logout-btn:hover {
-  background: rgba(239, 68, 68, 0.12);
+  background: rgba(239, 68, 68, 0.08);
   color: #f87171;
+  border-color: rgba(239, 68, 68, 0.15);
+  transform: translateX(4px);
+}
+
+.main-logout {
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  padding: 14px;
+}
+
+.main-logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+}
+
+.logout-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.main-logout:hover .logout-icon-box {
+  background: #ef4444;
+  color: white;
+  transform: rotate(-10deg);
+}
+
+/* ─── AUTH SIDEBAR IMAGES ────────────────────────────────────── */
+.auth-sidebar-img {
+  width: 100%;
+  max-width: 380px;
+  border-radius: 20px;
+  margin: 30px auto;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  display: block;
+}
+
+.auth-logo-box {
+  width: 44px;
+  height: 44px;
+  background: #fff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.auth-logo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 /* ─── TOPBAR ─────────────────────────────────────────────────── */

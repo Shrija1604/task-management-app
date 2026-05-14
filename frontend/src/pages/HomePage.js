@@ -5,7 +5,7 @@ const HomePage = () => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  // Fixed dashboard route
+
   const dashboardPath = user.role === "admin" ? "/admin" : "/tasks";
 
   return (
@@ -17,7 +17,7 @@ const HomePage = () => {
         margin: "0 auto",
       }}
     >
-      {/* Navigation */}
+
       <nav
         style={{
           display: "flex",
@@ -184,7 +184,7 @@ const HomePage = () => {
               </Link>
             )}
 
-            {/* Fixed accessible anchor */}
+
             <a
               href="#features"
               className="photo-upload-btn"
@@ -215,7 +215,7 @@ const HomePage = () => {
         </div>
       </header>
 
-      {/* Stats Section */}
+
       <div
         style={{
           display: "flex",
@@ -250,7 +250,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Features */}
+
       <section id="features" className="features-section">
         <h2
           style={{
@@ -404,7 +404,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="footer">
         <div
           style={{
@@ -445,9 +444,7 @@ const HomePage = () => {
           Making productivity accessible and enjoyable for everyone.
         </p>
 
-       
 
-        {/* Contact */}
         <div
           className="contact-info"
           style={{
