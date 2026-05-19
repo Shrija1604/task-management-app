@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ─── CSS CUSTOM PROPERTIES ────────────────────────────────── */
 :root {
   /* Dark theme (default) */
@@ -792,6 +796,78 @@ button:active {
 .social-btn:hover {
   color: white;
   transform: translateY(-2px);
+}
+
+/* ─── KANBAN BOARD ───────────────────────────────────────────── */
+.kanban-board {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  padding-bottom: 20px;
+}
+
+.kanban-column {
+  flex: 1;
+  min-width: 320px;
+  background: var(--card-bg);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.kanban-column.drag-over {
+  background: rgba(124, 58, 237, 0.1);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
+}
+
+.kanban-column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.kanban-column-header h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.kanban-count {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .kanban-count {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.kanban-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 150px;
+}
+
+.kanban-drag-item {
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.kanban-drag-item.dragging {
+  opacity: 0.6;
+  transform: scale(0.96) rotate(2deg);
 }
 
 /* ─── RESPONSIVE ─────────────────────────────────────────────── */

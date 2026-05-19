@@ -1,106 +1,111 @@
-import React, { useState } from "react";
+import React from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 
 const CalendarView = ({ tasks = [], categories = [] }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-
-  const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
-  const firstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
-
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-
-  const totalDays = daysInMonth(year, month);
-  const startDay = firstDayOfMonth(year, month);
-
-  const days = [];
-  for (let i = 0; i < startDay; i++) days.push(null);
-  for (let i = 1; i <= totalDays; i++) days.push(i);
-
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
-  const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
-
-  const getTasksForDay = (day) => {
-    if (!day) return [];
-    return tasks.filter(task => {
-      if (!task.dueDate) return false;
-      const d = new Date(task.dueDate);
-      return d.getDate() === day && d.getMonth() === month && d.getFullYear() === year;
-    });
-  };
-
-  const priorityColors = {
-    High: "#ef4444",
-    Medium: "#f59e0b",
-    Low: "#10b981",
-  };
-
   const getCategoryColor = (catName) => {
     const cat = categories.find(c => c.name === catName);
-    return cat ? cat.color : "var(--text-secondary)";
+    return cat ? cat.color : "#6366f1"; // default indigo
+  };
+
+  // Convert tasks to FullCalendar event format
+  const events = tasks
+    .filter((task) => task.dueDate)
+    .map((task) => {
+      const isDone = task.status === "Done";
+      const color = isDone ? "#10b981" : getCategoryColor(task.category); // green if done
+      
+      return {
+        id: task._id,
+        title: task.title,
+        date: task.dueDate.split('T')[0], // yyyy-mm-dd
+        backgroundColor: `${color}20`, // 20% opacity background
+        borderColor: color,
+        textColor: color,
+        extendedProps: {
+          isDone,
+          priority: task.priority,
+        }
+      };
+    });
+
+  const renderEventContent = (eventInfo) => {
+    const { isDone, priority } = eventInfo.event.extendedProps;
+    
+    let priorityColor = "bg-blue-500";
+    if (priority === "Urgent") priorityColor = "bg-red-600";
+    if (priority === "High") priorityColor = "bg-orange-500";
+    if (priority === "Low") priorityColor = "bg-green-500";
+
+    return (
+      <div className={`flex items-center gap-1 overflow-hidden px-1 ${isDone ? "opacity-50 line-through" : ""}`}>
+        <div className={`h-1.5 w-1.5 flex-shrink-0 rounded-full ${priorityColor}`} />
+        <span className="truncate text-xs font-semibold">{eventInfo.event.title}</span>
+      </div>
+    );
   };
 
   return (
-    <div className="calendar-container">
-      <div className="calendar-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <button onClick={prevMonth} className="auth-btn" style={{ width: '40px', height: '40px', padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', color: 'var(--text-primary)', border: '1px solid var(--border-color)', boxShadow: 'none' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            </button>
-            <h2 style={{ fontSize: '24px', fontWeight: '800', minWidth: '180px', textAlign: 'center', letterSpacing: '-0.5px' }}>{monthNames[month]} {year}</h2>
-            <button onClick={nextMonth} className="auth-btn" style={{ width: '40px', height: '40px', padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', color: 'var(--text-primary)', border: '1px solid var(--border-color)', boxShadow: 'none' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </button>
-          </div>
-        </div>
-        <button onClick={() => setCurrentDate(new Date())} className="auth-btn" style={{ width: 'auto', padding: '10px 24px', background: '#fff', color: 'var(--text-primary)', border: '1px solid var(--border-color)', boxShadow: 'none', fontWeight: '700' }}>Today</button>
-      </div>
-
-      <div className="calendar-grid">
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => (
-          <div key={d} className="calendar-day-head">{d}</div>
-        ))}
-        {days.map((day, idx) => {
-          const dayTasks = getTasksForDay(day);
-          const isToday = day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
-          
-          return (
-            <div key={idx} className={`calendar-day ${!day ? 'empty' : ''}`} style={isToday ? { border: '2px solid var(--accent-primary)', zIndex: 1 } : {}}>
-              {day && (
-                <>
-                  <div className="day-number" style={isToday ? { color: 'var(--accent-primary)' } : {}}>{day}</div>
-                    {dayTasks.map(task => {
-                      const catColor = getCategoryColor(task.category);
-                      const isDone = task.status === 'Done';
-                      return (
-                        <div 
-                          key={task._id} 
-                          className={`calendar-task-tag ${isDone ? 'completed' : ''}`}
-                          style={{ 
-                            background: isDone ? 'rgba(16,185,129,0.08)' : `${catColor}12`, 
-                            color: isDone ? '#10b981' : catColor, 
-                            borderLeft: `3px solid ${isDone ? '#10b981' : catColor}`,
-                            opacity: isDone ? 0.7 : 1,
-                            textDecoration: isDone ? 'line-through' : 'none'
-                          }}
-                          title={`${task.title} (${task.priority} priority)`}
-                        >
-                          <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: priorityColors[task.priority], flexShrink: 0 }} />
-                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{task.title}</span>
-                        </div>
-                      );
-                    })}
-                </>
-              )}
-            </div>
-          );
-        })}
-      </div>
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-800/50">
+      <style>
+        {`
+          .fc .fc-toolbar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+          }
+          .dark .fc .fc-toolbar-title {
+            color: #f1f5f9;
+          }
+          .fc .fc-button-primary {
+            background-color: #6366f1;
+            border-color: #6366f1;
+            text-transform: capitalize;
+            font-weight: 600;
+          }
+          .fc .fc-button-primary:hover {
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+          }
+          .fc-theme-standard td, .fc-theme-standard th, .fc-theme-standard .fc-scrollgrid {
+            border-color: #e2e8f0;
+          }
+          .dark .fc-theme-standard td, .dark .fc-theme-standard th, .dark .fc-theme-standard .fc-scrollgrid {
+            border-color: #334155;
+          }
+          .fc-day-today {
+            background-color: rgba(99, 102, 241, 0.05) !important;
+          }
+          .dark .fc-day-today {
+            background-color: rgba(99, 102, 241, 0.1) !important;
+          }
+          .fc-event {
+            border-radius: 4px;
+            border-width: 0 0 0 3px;
+            padding: 2px;
+            cursor: pointer;
+            transition: transform 0.2s;
+          }
+          .fc-event:hover {
+            transform: scale(1.02);
+          }
+        `}
+      </style>
+      <FullCalendar
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView="dayGridMonth"
+        headerToolbar={{
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek,timeGridDay",
+        }}
+        events={events}
+        eventContent={renderEventContent}
+        height="75vh"
+        dayMaxEvents={3}
+      />
     </div>
   );
 };

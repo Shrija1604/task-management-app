@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import Loader from "../components/Loader";
 import TaskCard from "../components/TaskCard";
 import CalendarView from "../components/CalendarView";
+import KanbanBoard from "../components/KanbanBoard";
 
 import {
   getTasks,
@@ -135,6 +136,55 @@ const TaskPage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const updateStatusHandler = async (id, newStatus) => {
+    const taskToUpdate = tasks.find((t) => t._id === id);
+    if (!taskToUpdate || taskToUpdate.status === newStatus) return;
+
+    // Optimistic UI update
+    setTasks((prev) =>
+      prev.map((t) => (t._id === id ? { ...t, status: newStatus } : t))
+    );
+
+    try {
+      await updateTask(id, { ...taskToUpdate, status: newStatus });
+    } catch (error) {
+      console.error("Error updating status:", error);
+      alert("Failed to update status.");
+      fetchTasks(); // Revert on failure
+    }
+  };
+
+  const exportToCSV = () => {
+    if (displayedTasks.length === 0) {
+      alert("No tasks to export.");
+      return;
+    }
+
+    const headers = ["Title", "Description", "Status", "Priority", "Category", "Due Date"];
+    const csvRows = [headers.join(",")];
+
+    displayedTasks.forEach((task) => {
+      const row = [
+        `"${(task.title || "").replace(/"/g, '""')}"`,
+        `"${(task.description || "").replace(/"/g, '""')}"`,
+        `"${task.status || ""}"`,
+        `"${task.priority || ""}"`,
+        `"${task.category || ""}"`,
+        `"${task.dueDate ? task.dueDate.split("T")[0] : ""}"`,
+      ];
+      csvRows.push(row.join(","));
+    });
+
+    const csvContent = "data:text/csv;charset=utf-8," + csvRows.join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "tasks_export.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const statusBadgeColor = {
     "To Do": { bg: "rgba(148,163,184,0.15)", color: "#94a3b8" },
     "In Progress": { bg: "rgba(124,58,237,0.15)", color: "#a78bfa" },
@@ -169,7 +219,27 @@ const TaskPage = () => {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
             </svg>
-            Grid View
+            Grid
+          </button>
+          <button
+            onClick={() => setView("kanban")}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "12px",
+              background: view === "kanban" ? "var(--accent-primary)" : "var(--card-bg)",
+              color: view === "kanban" ? "#fff" : "var(--text-secondary)",
+              border: "1px solid var(--border-color)",
+              fontWeight: "600",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="3" width="6" height="18" rx="2" ry="2"/><rect x="15" y="3" width="6" height="18" rx="2" ry="2"/>
+            </svg>
+            Kanban
           </button>
           <button
             onClick={() => setView("calendar")}
@@ -190,6 +260,28 @@ const TaskPage = () => {
               <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
             Calendar
+          </button>
+          <button
+            onClick={exportToCSV}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "12px",
+              background: "var(--card-bg)",
+              color: "var(--text-secondary)",
+              border: "1px solid var(--border-color)",
+              fontWeight: "600",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginLeft: "10px"
+            }}
+            title="Export tasks to CSV"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Export CSV
           </button>
         </div>
       </div>
@@ -392,6 +484,13 @@ const TaskPage = () => {
                 </div>
               )}
             </>
+          ) : view === "kanban" ? (
+            <KanbanBoard 
+              tasks={displayedTasks} 
+              onUpdateStatus={updateStatusHandler} 
+              onDelete={deleteHandler} 
+              onEdit={editHandler} 
+            />
           ) : (
             <CalendarView tasks={tasks} />
           )}

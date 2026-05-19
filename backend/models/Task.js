@@ -11,7 +11,7 @@ const taskSchema = mongoose.Schema(
     },
     priority: {
       type: String,
-      enum: ["Low", "Medium", "High"],
+      enum: ["Low", "Medium", "High", "Urgent"],
       default: "Medium",
     },
     category: {
@@ -19,6 +19,11 @@ const taskSchema = mongoose.Schema(
       default: "General",
     },
     dueDate: Date,
+    dueTime: String,
+    pomodoroSessions: {
+      type: Number,
+      default: 0,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

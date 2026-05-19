@@ -1,7 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { CheckCircle2, Clock, CalendarDays, AlertTriangle, PlayCircle, Loader2 } from "lucide-react";
 import API from "../services/api";
-import Loader from "../components/Loader";
 
 const UserDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -14,6 +26,14 @@ const UserDashboard = () => {
       try {
         const { data } = await API.get("/tasks/stats");
         setStats(data);
+        if (data.overdue > 0) {
+          import("react-hot-toast").then(({ toast }) => {
+            toast(`You have ${data.overdue} overdue task${data.overdue > 1 ? 's' : ''}!`, {
+              icon: '⚠️',
+              duration: 5000,
+            });
+          });
+        }
       } catch (err) {
         console.error("Error fetching stats:", err);
         setError("Could not load dashboard data.");
@@ -24,276 +44,181 @@ const UserDashboard = () => {
     fetchStats();
   }, []);
 
-  if (loading) return <Loader />;
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center dark:bg-slate-900">
+        <Loader2 className="h-10 w-10 animate-spin text-indigo-500" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-600 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400">
+          ⚠️ {error}
+        </div>
+      </div>
+    );
+  }
 
   const statCards = [
-    {
-      title: "Total Tasks",
-      value: stats?.total ?? 0,
-      icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01",
-      color: "var(--accent-primary)",
-      bg: "rgba(124,58,237,0.12)",
-    },
-    {
-      title: "Pending",
-      value: stats?.pending ?? 0,
-      icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
-      color: "#f59e0b",
-      bg: "rgba(245,158,11,0.12)",
-    },
-    {
-      title: "In Progress",
-      value: stats?.inProgress ?? 0,
-      icon: "M13 10V3L4 14h7v7l9-11h-7z",
-      color: "#6366f1",
-      bg: "rgba(99,102,241,0.12)",
-    },
-    {
-      title: "Completed",
-      value: stats?.completed ?? 0,
-      icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
-      color: "#10b981",
-      bg: "rgba(16,185,129,0.12)",
-    },
+    { title: "Total Tasks", value: stats?.total ?? 0, icon: <CheckCircle2 />, color: "text-indigo-500", bg: "bg-indigo-50 dark:bg-indigo-500/10" },
+    { title: "Completed", value: stats?.completed ?? 0, icon: <CheckCircle2 />, color: "text-green-500", bg: "bg-green-50 dark:bg-green-500/10" },
+    { title: "Pending", value: stats?.pending ?? 0, icon: <Clock />, color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-500/10" },
+    { title: "In Progress", value: stats?.inProgress ?? 0, icon: <PlayCircle />, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-500/10" },
+    { title: "Overdue", value: stats?.overdue ?? 0, icon: <AlertTriangle />, color: "text-red-500", bg: "bg-red-50 dark:bg-red-500/10" },
   ];
 
-  const completionPct =
-    stats?.total > 0
-      ? Math.round((stats.completed / stats.total) * 100)
-      : 0;
-
-  const inProgressPct =
-    stats?.total > 0
-      ? Math.round((stats.inProgress / stats.total) * 100)
-      : 0;
-
-  const priorityMap = { High: "#ef4444", Medium: "#f59e0b", Low: "#10b981" };
+  const pieData = [
+    { name: "Completed", value: stats?.completed ?? 0, color: "#10b981" },
+    { name: "In Progress", value: stats?.inProgress ?? 0, color: "#3b82f6" },
+    { name: "Pending", value: stats?.pending ?? 0, color: "#f59e0b" },
+  ];
 
   return (
-    <div className="main-content">
-      {/* ── TOPBAR ── */}
-      <div className="topbar">
+    <div className="min-h-screen bg-slate-50 p-6 dark:bg-slate-900 dark:text-slate-100 md:p-10">
+      {/* Header */}
+      <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1>Welcome back, {user.name?.split(" ")[0] || "User"}! 👋</h1>
-          <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginTop: "4px" }}>
-            Here's what's happening with your tasks today.
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Welcome back, {user.name?.split(" ")[0] || "User"}! 👋
+          </h1>
+          <p className="mt-1 text-slate-500 dark:text-slate-400">
+            Here's your productivity overview for today.
           </p>
         </div>
-        <div className="topbar-right">
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontWeight: "700", fontSize: "16px" }}>{user.name}</div>
-            <div style={{ fontSize: "12px", color: "var(--text-secondary)", fontWeight: "500" }}>
-              {user.role?.toUpperCase()}
-            </div>
+        <div className="hidden items-center gap-4 md:flex">
+          <div className="text-right">
+            <p className="font-semibold">{user.name}</p>
+            <p className="text-sm font-medium uppercase text-indigo-500">{user.role}</p>
           </div>
-          <div
-            style={{
-              width: "48px",
-              height: "48px",
-              borderRadius: "14px",
-              background: "linear-gradient(135deg, var(--accent-primary), #4f46e5)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#fff",
-              fontSize: "20px",
-              fontWeight: "800",
-              boxShadow: "0 4px 12px rgba(124,58,237,0.3)",
-              flexShrink: 0,
-            }}
-          >
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-xl font-bold text-white shadow-lg shadow-indigo-500/30">
             {user.name?.charAt(0)?.toUpperCase()}
           </div>
         </div>
       </div>
 
-      {error && (
-        <div
-          style={{
-            background: "rgba(239,68,68,0.12)",
-            border: "1px solid rgba(239,68,68,0.3)",
-            color: "#f87171",
-            padding: "14px 20px",
-            borderRadius: "14px",
-            marginBottom: "24px",
-            fontWeight: "600",
-          }}
-        >
-          ⚠️ {error}
-        </div>
-      )}
-
-      {/* ── STAT CARDS ── */}
-      <div className="stats-grid">
+      {/* Stat Cards */}
+      <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {statCards.map((card, idx) => (
-          <div key={idx} className="stat-card" style={{ cursor: "default" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <div>
-                <h3 style={{ fontSize: "13px", fontWeight: "600", color: "var(--text-secondary)", marginBottom: "10px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                  {card.title}
-                </h3>
-                <div style={{ fontSize: "42px", fontWeight: "800", color: card.color, lineHeight: 1 }}>
-                  {card.value}
-                </div>
-              </div>
-              <div
-                style={{
-                  background: card.bg,
-                  padding: "12px",
-                  borderRadius: "14px",
-                  color: card.color,
-                  flexShrink: 0,
-                }}
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d={card.icon} />
-                </svg>
-              </div>
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.1 }}
+            className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-slate-800 dark:bg-slate-800/50"
+          >
+            <div>
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                {card.title}
+              </p>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white">{card.value}</h3>
             </div>
-          </div>
+            <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl ${card.bg} ${card.color}`}>
+              {card.icon}
+            </div>
+          </motion.div>
         ))}
       </div>
 
-      {/* ── CHARTS + UPCOMING ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: "24px", marginTop: "4px" }}>
-        {/* Donut Progress */}
-        <div className="stat-card" style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "32px 24px" }}>
-          <h2 style={{ marginBottom: "28px", fontSize: "18px", fontWeight: "700", alignSelf: "flex-start" }}>
-            Completion Rate
-          </h2>
-          <div style={{ position: "relative", width: "180px", height: "180px" }}>
-            <svg width="180" height="180" viewBox="0 0 42 42">
-              <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
-              {/* In Progress arc */}
-              <circle
-                cx="21" cy="21" r="15.915"
-                fill="transparent"
-                stroke="#6366f1"
-                strokeWidth="4"
-                strokeDasharray={`${inProgressPct} ${100 - inProgressPct}`}
-                strokeDashoffset="25"
-                style={{ transition: "stroke-dasharray 1s ease" }}
-              />
-              {/* Completed arc */}
-              <circle
-                cx="21" cy="21" r="15.915"
-                fill="transparent"
-                stroke="#10b981"
-                strokeWidth="4"
-                strokeDasharray={`${completionPct} ${100 - completionPct}`}
-                strokeDashoffset={`${25 - inProgressPct}`}
-                style={{ transition: "stroke-dasharray 1s ease" }}
-              />
-            </svg>
-            <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", textAlign: "center" }}>
-              <div style={{ fontSize: "28px", fontWeight: "800" }}>{completionPct}%</div>
-              <div style={{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: "600" }}>Done</div>
-            </div>
-          </div>
-          <div style={{ display: "flex", gap: "20px", marginTop: "24px", flexWrap: "wrap", justifyContent: "center" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <div style={{ width: "10px", height: "10px", borderRadius: "3px", background: "#10b981" }} />
-              <span style={{ fontSize: "13px", fontWeight: "600", color: "var(--text-secondary)" }}>Completed ({stats?.completed ?? 0})</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <div style={{ width: "10px", height: "10px", borderRadius: "3px", background: "#6366f1" }} />
-              <span style={{ fontSize: "13px", fontWeight: "600", color: "var(--text-secondary)" }}>In Progress ({stats?.inProgress ?? 0})</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <div style={{ width: "10px", height: "10px", borderRadius: "3px", background: "rgba(255,255,255,0.12)" }} />
-              <span style={{ fontSize: "13px", fontWeight: "600", color: "var(--text-secondary)" }}>Pending ({stats?.pending ?? 0})</span>
-            </div>
+      <div className="grid gap-8 lg:grid-cols-3">
+        {/* Weekly Productivity */}
+        <div className="col-span-2 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-800/50">
+          <h2 className="mb-6 text-lg font-bold">Weekly Productivity</h2>
+          <div className="h-72 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={stats?.weeklyData || []}>
+                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip
+                  cursor={{ fill: 'transparent' }}
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                />
+                <Bar dataKey="completed" fill="#6366f1" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Upcoming Tasks */}
-        <div className="stat-card">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-            <h2 style={{ fontSize: "18px", fontWeight: "700" }}>Upcoming (7 days)</h2>
-            <Link to="/tasks" style={{ fontSize: "13px", color: "var(--accent-primary)", fontWeight: "700", textDecoration: "none" }}>
-              View All →
-            </Link>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            {!stats?.upcoming || stats.upcoming.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "30px 20px", color: "var(--text-muted)" }}>
-                <div style={{ fontSize: "32px", marginBottom: "8px" }}>🎉</div>
-                <p style={{ fontWeight: "600" }}>No upcoming deadlines!</p>
-              </div>
-            ) : (
-              stats.upcoming.map((t) => (
-                <div
-                  key={t._id}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "14px 16px",
-                    background: "rgba(255,255,255,0.04)",
-                    borderRadius: "14px",
-                    border: "1px solid var(--border-color)",
-                    gap: "12px",
-                  }}
+        {/* Status Distribution */}
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-800/50">
+          <h2 className="mb-6 text-lg font-bold">Status Distribution</h2>
+          <div className="flex h-64 items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
                 >
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontWeight: "700", fontSize: "14px", marginBottom: "4px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {t.title}
-                    </div>
-                    <div style={{ fontSize: "12px", color: "var(--text-secondary)" }}>
-                      Due {new Date(t.dueDate).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
-                    <span
-                      style={{
-                        fontSize: "11px",
-                        background: `${priorityMap[t.priority]}20`,
-                        color: priorityMap[t.priority],
-                        padding: "4px 10px",
-                        borderRadius: "6px",
-                        fontWeight: "700",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.5px",
-                      }}
-                    >
-                      {t.priority}
-                    </span>
-                  </div>
-                </div>
-              ))
-            )}
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-4 flex flex-wrap justify-center gap-4">
+            {pieData.map((item) => (
+              <div key={item.name} className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{item.name}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* ── QUICK ACTIONS ── */}
-      <div className="stat-card" style={{ marginTop: "24px" }}>
-        <h2 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "20px" }}>Quick Actions</h2>
-        <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
-          {[
-            { label: "➕ New Task", to: "/tasks", color: "var(--accent-primary)" },
-            { label: "📅 Calendar", to: "/calendar", color: "#6366f1" },
-            { label: "📊 Statistics", to: "/statistics", color: "#10b981" },
-            { label: "👤 Profile", to: "/profile", color: "#f59e0b" },
-          ].map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              style={{
-                padding: "12px 22px",
-                borderRadius: "14px",
-                background: `${item.color}15`,
-                color: item.color,
-                fontWeight: "700",
-                fontSize: "14px",
-                textDecoration: "none",
-                border: `1px solid ${item.color}30`,
-                transition: "0.2s",
-              }}
-            >
-              {item.label}
-            </Link>
-          ))}
+      {/* Upcoming Tasks */}
+      <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-800/50">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-lg font-bold">Upcoming Deadlines (7 days)</h2>
+          <Link to="/tasks" className="text-sm font-semibold text-indigo-500 hover:text-indigo-600">
+            View All Tasks &rarr;
+          </Link>
+        </div>
+        
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {!stats?.upcoming || stats.upcoming.length === 0 ? (
+            <div className="col-span-full rounded-2xl border border-dashed border-slate-300 p-8 text-center dark:border-slate-700">
+              <CalendarDays className="mx-auto mb-3 h-10 w-10 text-slate-400" />
+              <p className="font-medium text-slate-600 dark:text-slate-400">No upcoming deadlines! 🎉</p>
+            </div>
+          ) : (
+            stats.upcoming.map((task) => (
+              <div
+                key={task._id}
+                className="flex flex-col justify-between rounded-2xl border border-slate-100 bg-slate-50 p-5 dark:border-slate-700/50 dark:bg-slate-800/80"
+              >
+                <div>
+                  <h3 className="mb-1 truncate font-semibold text-slate-900 dark:text-white">{task.title}</h3>
+                  <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                    <Clock className="h-4 w-4" />
+                    {new Date(task.dueDate).toLocaleDateString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </div>
+                </div>
+                <div className="mt-4 flex items-center justify-between">
+                  <span className={`rounded-lg px-3 py-1 text-xs font-bold uppercase tracking-wider ${
+                    task.priority === 'Urgent' ? 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400' :
+                    task.priority === 'High' ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400' :
+                    task.priority === 'Medium' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400' :
+                    'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400'
+                  }`}>
+                    {task.priority}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
