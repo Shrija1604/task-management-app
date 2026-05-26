@@ -208,17 +208,66 @@ stateDiagram-v2
     AdminDashboard --> [*]
 ```
 
-### 10.4 Data Flow Diagram (Level 1)
+### 10.4 Data Flow Diagrams (DFD)
+
+#### Level 0 DFD (Context Diagram)
 ```mermaid
-graph LR
-    U[User] -- \"Credentials\" --> P1[Auth Process]
-    P1 -- \"Token\" --> U
-    U -- \"Task Data\" --> P2[Task Management]
-    P2 -- \"CRUD Operations\" --> DB[(Database)]
-    DB -- \"Task List\" --> P2
-    P2 -- \"Visualized Data\" --> U
-    A[Admin] -- \"Mod Commands\" --> P3[Admin Console]
-    P3 -- \"Fetch All Data\" --> DB
+graph TD
+    User([User]) -- "Credentials & Task Data" --> System[Smart Task Hub System]
+    System -- "Task Updates, Stats & Notifications" --> User
+    
+    Admin([Admin]) -- "System Settings & Moderation Commands" --> System
+    System -- "System Insights & User Data" --> Admin
+```
+
+#### Level 1 DFD
+```mermaid
+graph TD
+    User([User])
+    Admin([Admin])
+    DB[(Database)]
+    
+    subgraph "Smart Task Hub Processes"
+        Auth[1.0 Authentication]
+        TaskMgmt[2.0 Task Management]
+        UserMgmt[3.0 User/Profile Management]
+        Analytics[4.0 Analytics & Insights]
+    end
+    
+    User -- "Credentials" --> Auth
+    Auth -- "Auth Token" --> User
+    Auth -- "Validation" --> DB
+    
+    User -- "Task Details" --> TaskMgmt
+    TaskMgmt -- "CRUD Operations" --> DB
+    DB -- "Tasks Data" --> TaskMgmt
+    TaskMgmt -- "Task Views" --> User
+    
+    Admin -- "Mod Commands" --> UserMgmt
+    UserMgmt -- "Update/Delete Users" --> DB
+    DB -- "User List" --> UserMgmt
+    
+    Admin -- "Request Reports" --> Analytics
+    DB -- "System Data" --> Analytics
+    Analytics -- "Dashboard Insights" --> Admin
+```
+
+### 10.5 Sequence Diagram (Task Creation Flow)
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend as React UI
+    participant Backend as Node API
+    participant DB as MongoDB
+
+    User->>Frontend: Enter task details & Submit
+    Frontend->>Backend: POST /api/tasks (with JWT)
+    Backend->>Backend: Verify JWT Token
+    Backend->>DB: Insert New Task Document
+    DB-->>Backend: Confirm Task Insertion
+    Backend-->>Frontend: Return Created Task Data
+    Frontend->>Frontend: Update UI State
+    Frontend-->>User: Display New Task on Board
 ```
 
 ---

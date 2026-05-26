@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import NotificationDropdown from "./NotificationDropdown";
 
 const Navbar = () => {
   const location = useLocation();
@@ -123,6 +124,7 @@ const Navbar = () => {
             {isAdmin ? "🔐 Admin" : user.role}
           </div>
         </div>
+        <NotificationDropdown />
       </div>
 
       {/* Nav Links */}

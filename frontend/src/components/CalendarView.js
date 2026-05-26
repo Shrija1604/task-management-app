@@ -10,7 +10,6 @@ const CalendarView = ({ tasks = [], categories = [] }) => {
     return cat ? cat.color : "#6366f1"; // default indigo
   };
 
-  // Convert tasks to FullCalendar event format
   const events = tasks
     .filter((task) => task.dueDate)
     .map((task) => {

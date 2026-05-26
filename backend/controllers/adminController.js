@@ -1,9 +1,6 @@
 const User = require("../models/User");
 const Task = require("../models/Task");
 
-// @desc    Get all users
-// @route   GET /api/admin/users
-// @access  Private/Admin
 const getUsers = async (req, res) => {
   try {
     const users = await User.find({}).select("-password");
@@ -14,9 +11,6 @@ const getUsers = async (req, res) => {
   }
 };
 
-// @desc    Delete user
-// @route   DELETE /api/admin/users/:id
-// @access  Private/Admin
 const deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -29,7 +23,6 @@ const deleteUser = async (req, res) => {
       return res.status(403).json({ message: "Cannot delete an admin account" });
     }
 
-    // Delete all tasks associated with the user first
     await Task.deleteMany({ user: user._id });
     await user.deleteOne();
     res.json({ message: "User removed" });
@@ -39,9 +32,6 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// @desc    Get dashboard stats
-// @route   GET /api/admin/stats
-// @access  Private/Admin
 const getDashboardStats = async (req, res) => {
   try {
     const userCount = await User.countDocuments();
@@ -54,7 +44,6 @@ const getDashboardStats = async (req, res) => {
     const mediumPriority = await Task.countDocuments({ priority: "Medium" });
     const lowPriority = await Task.countDocuments({ priority: "Low" });
 
-    // Get all users with their task counts
     const users = await User.find({}).select("-password");
     const usersWithStats = await Promise.all(
       users.map(async (user) => {
@@ -93,9 +82,6 @@ const getDashboardStats = async (req, res) => {
   }
 };
 
-// @desc    Get all system tasks
-// @route   GET /api/admin/tasks
-// @access  Private/Admin
 const getSystemTasks = async (req, res) => {
   try {
     const tasks = await Task.find({})
@@ -109,9 +95,6 @@ const getSystemTasks = async (req, res) => {
   }
 };
 
-// @desc    Delete any task in the system
-// @route   DELETE /api/admin/tasks/:id
-// @access  Private/Admin
 const deleteSystemTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);

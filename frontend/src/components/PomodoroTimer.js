@@ -14,13 +14,12 @@ const PomodoroTimer = ({ task, onCompleteSession }) => {
     clearInterval(timerRef.current);
     
     if (mode === "focus") {
-      // Focus session complete
       toast.success("Focus session completed! Take a break.");
       if (onCompleteSession) onCompleteSession(task._id);
       setMode("break");
       setTimeLeft(5 * 60); // 5 min break
     } else {
-      // Break complete
+      
       toast("Break over. Back to work!", { icon: "☕" });
       setMode("focus");
       setTimeLeft(25 * 60); // 25 min focus

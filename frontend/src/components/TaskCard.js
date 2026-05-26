@@ -19,7 +19,6 @@ const TaskCard = ({ task, onDelete, onEdit }) => {
 
   const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== "Done";
   
-  // Calculate days left
   let daysLeftText = "";
   if (task.dueDate && !isOverdue && task.status !== "Done") {
     const diffTime = Math.abs(new Date(task.dueDate) - new Date());
@@ -31,7 +30,6 @@ const TaskCard = ({ task, onDelete, onEdit }) => {
 
   const handlePomodoroComplete = async (taskId) => {
     try {
-      // Increment the pomodoro sessions count
       const currentSessions = task.pomodoroSessions || 0;
       await updateTask(taskId, { ...task, pomodoroSessions: currentSessions + 1 });
     } catch (error) {

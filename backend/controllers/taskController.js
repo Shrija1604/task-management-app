@@ -1,6 +1,5 @@
 const Task = require("../models/Task");
-
-// CREATE TASK
+const Notification = require("../models/Notification");
 const createTask = async (req, res) => {
   try {
     const {
@@ -30,6 +29,13 @@ const createTask = async (req, res) => {
       user: req.user._id,
     });
 
+    await Notification.create({
+      user: req.user._id,
+      title: "New Task Created",
+      message: `Task "${task.title}" has been successfully added.`,
+      type: "task",
+    });
+
     res.status(201).json(task);
   } catch (error) {
     console.error("Create Task Error:", error);
@@ -39,12 +45,10 @@ const createTask = async (req, res) => {
   }
 };
 
-// GET TASKS
 const getTasks = async (req, res) => {
   try {
     const { search, status, priority, category, sortBy, sortOrder, startDate, endDate } = req.query;
     
-    // Build the query object
     let query = { user: req.user._id };
 
     if (search) {
@@ -63,7 +67,6 @@ const getTasks = async (req, res) => {
       if (endDate) query.dueDate.$lte = new Date(endDate);
     }
 
-    // Build the sort object
     let sortObj = { createdAt: -1 };
     if (sortBy) {
       sortObj = {};
@@ -81,21 +84,15 @@ const getTasks = async (req, res) => {
   }
 };
 
-// GET TASK STATS (for user dashboard)
 const getTaskStats = async (req, res) => {
   try {
     const userId = req.user._id;
-
     const total = await Task.countDocuments({ user: userId });
     const completed = await Task.countDocuments({ user: userId, status: "Done" });
     const inProgress = await Task.countDocuments({ user: userId, status: "In Progress" });
     const pending = await Task.countDocuments({ user: userId, status: "To Do" });
-
-    // Count distinct categories
     const categoryAgg = await Task.distinct("category", { user: userId });
     const categories = categoryAgg.length;
-
-    // Overdue tasks
     const now = new Date();
     const overdue = await Task.countDocuments({
       user: userId,
@@ -103,7 +100,6 @@ const getTaskStats = async (req, res) => {
       dueDate: { $lt: now }
     });
 
-    // Upcoming tasks — due within the next 7 days and not done
     const oneWeekLater = new Date();
     oneWeekLater.setDate(now.getDate() + 7);
 
@@ -115,7 +111,6 @@ const getTaskStats = async (req, res) => {
       .sort({ dueDate: 1 })
       .limit(5);
       
-    // Weekly productivity (tasks completed per day for last 7 days)
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(now.getDate() - 6);
     sevenDaysAgo.setHours(0, 0, 0, 0);
@@ -137,7 +132,6 @@ const getTaskStats = async (req, res) => {
       { $sort: { _id: 1 } }
     ]);
 
-    // Format weekly data for Recharts
     const weeklyData = [];
     for (let i = 0; i < 7; i++) {
       const d = new Date(sevenDaysAgo);
@@ -166,7 +160,6 @@ const getTaskStats = async (req, res) => {
   }
 };
 
-// UPDATE TASK
 const updateTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -187,10 +180,19 @@ const updateTask = async (req, res) => {
       req.params.id,
       req.body,
       {
-        new: true,
+        returnDocument: 'after',
         runValidators: true,
       }
     );
+
+    if (task.status !== "Done" && updatedTask.status === "Done") {
+      await Notification.create({
+        user: req.user._id,
+        title: "Task Completed 🎉",
+        message: `Awesome! You completed "${updatedTask.title}".`,
+        type: "success",
+      });
+    }
 
     res.status(200).json(updatedTask);
   } catch (error) {
@@ -201,7 +203,6 @@ const updateTask = async (req, res) => {
   }
 };
 
-// DELETE TASK
 const deleteTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);

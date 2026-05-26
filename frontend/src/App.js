@@ -17,7 +17,6 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 
-// Protected Route Component
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -28,7 +27,6 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
   return children;
 };
 
-// Auth-only pages redirect logged-in users away
 const PublicRoute = ({ children }) => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -83,7 +81,7 @@ function AppContent() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/resetpassword/:token" element={<ResetPasswordPage />} />
 
-        {/* Protected user pages */}
+        
         <Route
           path="/dashboard"
           element={
@@ -133,7 +131,6 @@ function AppContent() {
           }
         />
 
-        {/* Admin-only page */}
         <Route
           path="/admin"
           element={
@@ -143,7 +140,6 @@ function AppContent() {
           }
         />
 
-        {/* 404 fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>

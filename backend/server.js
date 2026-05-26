@@ -2,21 +2,16 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
-
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
-
 dotenv.config();
-
 const app = express();
 
-// Connect DB
 connectDB();
 
-// Middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
@@ -24,6 +19,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
+      "https://task-management-kyrva6pm6-shrija1604s-projects.vercel.app",
       process.env.FRONTEND_URL,
     ].filter(Boolean),
     credentials: true,

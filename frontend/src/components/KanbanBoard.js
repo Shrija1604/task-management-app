@@ -8,6 +8,7 @@ import {
   useSensors,
   DragOverlay,
 } from "@dnd-kit/core";
+
 import {
   SortableContext,
   sortableKeyboardCoordinates,
@@ -148,14 +149,12 @@ const KanbanBoard = ({ tasks, onUpdateStatus, onDelete, onEdit }) => {
     const overId = over.id;
 
     if (activeId === overId) return;
-
-    // Find the task and its new status
+    
     const activeTask = tasks.find((t) => t._id === activeId);
     if (!activeTask) return;
 
     let newStatus = activeTask.status;
 
-    // Check if we dropped over a column directly or over another task
     const isOverAColumn = Object.keys(columns).includes(overId);
     
     if (isOverAColumn) {
