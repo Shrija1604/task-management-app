@@ -23,7 +23,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://task-management-app-one-sepia.vercel.app/",
+      "https://task-management-app-one-sepia.vercel.app",
       "https://task-management-kyrva6pm6-shrija1604s-projects.vercel.app",
       process.env.FRONTEND_URL,
     ].filter(Boolean),
