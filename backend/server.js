@@ -25,12 +25,17 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://task-management-app-one-sepia.vercel.app",
-      "https://task-management-kyrva6pm6-shrija1604s-projects.vercel.app",
-      process.env.FRONTEND_URL,
-    ].filter(Boolean),
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (
+        origin.startsWith("http://localhost:") ||
+        origin.endsWith(".vercel.app") ||
+        origin === process.env.FRONTEND_URL
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
     credentials: true,
   })
 );
