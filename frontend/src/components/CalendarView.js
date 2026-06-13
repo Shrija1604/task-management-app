@@ -7,7 +7,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 const CalendarView = ({ tasks = [], categories = [] }) => {
   const getCategoryColor = (catName) => {
     const cat = categories.find(c => c.name === catName);
-    return cat ? cat.color : "#6366f1"; // default indigo
+    return cat ? cat.color : "#6366f1";
   };
 
   const events = tasks
@@ -15,12 +15,12 @@ const CalendarView = ({ tasks = [], categories = [] }) => {
     .map((task) => {
       const isDone = task.status === "Done";
       const color = isDone ? "#10b981" : getCategoryColor(task.category); // green if done
-      
+
       return {
         id: task._id,
         title: task.title,
-        date: task.dueDate.split('T')[0], // yyyy-mm-dd
-        backgroundColor: `${color}20`, // 20% opacity background
+        date: task.dueDate.split('T')[0],
+        backgroundColor: `${color}20`,
         borderColor: color,
         textColor: color,
         extendedProps: {
@@ -32,7 +32,7 @@ const CalendarView = ({ tasks = [], categories = [] }) => {
 
   const renderEventContent = (eventInfo) => {
     const { isDone, priority } = eventInfo.event.extendedProps;
-    
+
     let priorityColor = "bg-blue-500";
     if (priority === "Urgent") priorityColor = "bg-red-600";
     if (priority === "High") priorityColor = "bg-orange-500";

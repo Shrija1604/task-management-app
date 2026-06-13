@@ -69,7 +69,7 @@ const RegisterPage = () => {
   return (
     <div className="auth-wrapper">
       <div className="auth-container">
-        {/* Left Sidebar */}
+
         <div className="auth-sidebar">
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "30px" }}>
             <div className="auth-logo-box">
@@ -98,7 +98,7 @@ const RegisterPage = () => {
           </div>
         </div>
 
-        {/* Right Form */}
+
         <div className="auth-form-side">
           <h2>Create your account</h2>
           <p>Fill in the details to get started</p>

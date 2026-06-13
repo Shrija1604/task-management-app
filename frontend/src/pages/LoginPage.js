@@ -6,7 +6,6 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Show success banner if redirected from registration
   const justRegistered = location.state?.registered === true;
 
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -51,7 +50,7 @@ const LoginPage = () => {
   return (
     <div className="auth-wrapper">
       <div className="auth-container">
-        {/* Left Sidebar */}
+
         <div className="auth-sidebar">
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "30px" }}>
             <div className="auth-logo-box">
@@ -80,7 +79,6 @@ const LoginPage = () => {
           </div>
         </div>
 
-        {/* Right Form */}
         <div className="auth-form-side">
           <h2>Login to your account</h2>
           <p>Please enter your details</p>

@@ -6,7 +6,6 @@ const API = axios.create({
     "http://localhost:5000/api",
 });
 
-// Attach token to every request
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
 

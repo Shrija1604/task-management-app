@@ -118,6 +118,20 @@ const updateProfile = async (req, res) => {
     user.profileImage = req.body.profileImage || user.profileImage;
     if (req.body.password) user.password = req.body.password;
 
+    // New personal detail fields
+    if (req.body.dateOfBirth !== undefined) user.dateOfBirth = req.body.dateOfBirth || null;
+    if (req.body.gender !== undefined) user.gender = req.body.gender;
+    if (req.body.phone !== undefined) user.phone = req.body.phone;
+    if (req.body.bio !== undefined) user.bio = req.body.bio;
+    if (req.body.address) {
+      user.address = {
+        city: req.body.address.city ?? user.address?.city ?? "",
+        state: req.body.address.state ?? user.address?.state ?? "",
+        country: req.body.address.country ?? user.address?.country ?? "",
+        pincode: req.body.address.pincode ?? user.address?.pincode ?? "",
+      };
+    }
+
     const updatedUser = await user.save();
 
     res.json({
@@ -128,6 +142,11 @@ const updateProfile = async (req, res) => {
       themePreference: updatedUser.themePreference,
       viewPreference: updatedUser.viewPreference,
       profileImage: updatedUser.profileImage,
+      dateOfBirth: updatedUser.dateOfBirth,
+      gender: updatedUser.gender,
+      phone: updatedUser.phone,
+      bio: updatedUser.bio,
+      address: updatedUser.address,
       token: generateToken(updatedUser._id),
     });
   } catch (error) {

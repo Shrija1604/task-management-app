@@ -326,7 +326,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* About Section */}
       <section
         style={{
           display: "flex",

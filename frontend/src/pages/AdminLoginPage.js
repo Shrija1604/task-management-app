@@ -56,7 +56,7 @@ const AdminLoginPage = () => {
   return (
     <div className="auth-wrapper">
       <div className="auth-container">
-        {/* Left Sidebar */}
+
         <div className="auth-sidebar" style={{ background: "linear-gradient(160deg, #1e293b 0%, #0f172a 100%)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "30px" }}>
             <div className="auth-logo-box">
@@ -97,7 +97,6 @@ const AdminLoginPage = () => {
           </div>
         </div>
 
-        {/* Right Form */}
         <div className="auth-form-side">
           <h2>Admin Login</h2>
           <p>Please enter your administrative credentials</p>

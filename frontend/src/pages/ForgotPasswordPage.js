@@ -25,7 +25,7 @@ const ForgotPasswordPage = () => {
   return (
     <div className="auth-wrapper">
       <div className="auth-container">
-        {/* Left Sidebar */}
+
         <div className="auth-sidebar">
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "30px" }}>
             <div className="auth-logo-box">
@@ -42,7 +42,6 @@ const ForgotPasswordPage = () => {
           </div>
         </div>
 
-        {/* Right Form */}
         <div className="auth-form-side">
           <div style={{ textAlign: "center", width: "100%", maxWidth: "400px", margin: "0 auto" }}>
             {!submitted ? (

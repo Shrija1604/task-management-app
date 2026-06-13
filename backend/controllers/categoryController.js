@@ -8,7 +8,6 @@ const DEFAULT_CATEGORIES = [
   { name: "Education", color: "#3b82f6", icon: "📚", isDefault: true },
 ];
 
-// @desc    Seed default categories if none exist
 const seedDefaultCategories = async () => {
   try {
     const count = await Category.countDocuments();
@@ -21,9 +20,6 @@ const seedDefaultCategories = async () => {
   }
 };
 
-// @desc    Get all categories (public — for task form dropdowns)
-// @route   GET /api/categories
-// @access  Private
 const getCategories = async (req, res) => {
   try {
     await seedDefaultCategories();
@@ -35,9 +31,6 @@ const getCategories = async (req, res) => {
   }
 };
 
-// @desc    Create a category
-// @route   POST /api/categories
-// @access  Private/Admin
 const createCategory = async (req, res) => {
   try {
     const { name, color, icon, description } = req.body;
@@ -65,9 +58,6 @@ const createCategory = async (req, res) => {
   }
 };
 
-// @desc    Update a category
-// @route   PUT /api/categories/:id
-// @access  Private/Admin
 const updateCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
@@ -97,9 +87,6 @@ const updateCategory = async (req, res) => {
   }
 };
 
-// @desc    Delete a category
-// @route   DELETE /api/categories/:id
-// @access  Private/Admin
 const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);

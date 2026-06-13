@@ -78,7 +78,6 @@ const UserDashboard = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 p-6 dark:bg-slate-900 dark:text-slate-100 md:p-10">
-      {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
@@ -99,7 +98,6 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      {/* Stat Cards */}
       <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {statCards.map((card, idx) => (
           <motion.div
@@ -123,7 +121,6 @@ const UserDashboard = () => {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
-        {/* Weekly Productivity */}
         <div className="col-span-2 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-800/50">
           <h2 className="mb-6 text-lg font-bold">Weekly Productivity</h2>
           <div className="h-72 w-full">
@@ -175,7 +172,6 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      {/* Upcoming Tasks */}
       <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-800/50">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-bold">Upcoming Deadlines (7 days)</h2>
@@ -183,7 +179,7 @@ const UserDashboard = () => {
             View All Tasks &rarr;
           </Link>
         </div>
-        
+
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {!stats?.upcoming || stats.upcoming.length === 0 ? (
             <div className="col-span-full rounded-2xl border border-dashed border-slate-300 p-8 text-center dark:border-slate-700">
@@ -207,12 +203,11 @@ const UserDashboard = () => {
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between">
-                  <span className={`rounded-lg px-3 py-1 text-xs font-bold uppercase tracking-wider ${
-                    task.priority === 'Urgent' ? 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400' :
-                    task.priority === 'High' ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400' :
-                    task.priority === 'Medium' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400' :
-                    'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400'
-                  }`}>
+                  <span className={`rounded-lg px-3 py-1 text-xs font-bold uppercase tracking-wider ${task.priority === 'Urgent' ? 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-400' :
+                      task.priority === 'High' ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400' :
+                        task.priority === 'Medium' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400' :
+                          'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400'
+                    }`}>
                     {task.priority}
                   </span>
                 </div>

@@ -1,5 +1,7 @@
 import React from "react";
 import PomodoroTimer from "./PomodoroTimer";
+import TaskNotes from "./TaskNotes";
+import TaskAttachments from "./TaskAttachments";
 import { Calendar, AlertTriangle, Edit2, Trash2 } from "lucide-react";
 import { updateTask } from "../services/taskService";
 
@@ -86,6 +88,9 @@ const TaskCard = ({ task, onDelete, onEdit }) => {
         {task.status !== "Done" && (
           <PomodoroTimer task={task} onCompleteSession={handlePomodoroComplete} />
         )}
+
+        <TaskNotes taskId={task._id} />
+        <TaskAttachments taskId={task._id} />
 
         <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-700/50">
           <div className="flex items-center gap-2">

@@ -106,17 +106,16 @@ const KanbanBoard = ({ tasks, onUpdateStatus, onDelete, onEdit }) => {
     "In Progress": [],
     "Done": [],
   });
-  
+
   const [activeTask, setActiveTask] = useState(null);
 
   useEffect(() => {
-    // Distribute tasks into columns
     const newCols = { "To Do": [], "In Progress": [], "Done": [] };
     tasks.forEach((task) => {
       if (newCols[task.status]) {
         newCols[task.status].push(task);
       } else {
-        newCols["To Do"].push(task); // Fallback
+        newCols["To Do"].push(task);
       }
     });
     setColumns(newCols);
@@ -149,14 +148,14 @@ const KanbanBoard = ({ tasks, onUpdateStatus, onDelete, onEdit }) => {
     const overId = over.id;
 
     if (activeId === overId) return;
-    
+
     const activeTask = tasks.find((t) => t._id === activeId);
     if (!activeTask) return;
 
     let newStatus = activeTask.status;
 
     const isOverAColumn = Object.keys(columns).includes(overId);
-    
+
     if (isOverAColumn) {
       newStatus = overId;
     } else {
@@ -191,7 +190,7 @@ const KanbanBoard = ({ tasks, onUpdateStatus, onDelete, onEdit }) => {
             />
           ))}
         </div>
-        
+
         <DragOverlay>
           {activeTask ? (
             <div className="rounded-xl border border-indigo-300 bg-white p-4 opacity-80 shadow-2xl dark:border-indigo-700 dark:bg-slate-800">

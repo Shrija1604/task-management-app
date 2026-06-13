@@ -27,7 +27,6 @@ const AdminDashboard = () => {
   const [deleting, setDeleting] = useState(null);
   const [activeTab, setActiveTab] = useState("users");
 
-  // Category form state
   const [catForm, setCatForm] = useState(EMPTY_CAT);
   const [editingCatId, setEditingCatId] = useState(null);
   const [catSaving, setCatSaving] = useState(false);
@@ -228,7 +227,6 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* Stat Cards */}
       <div className="stats-grid">
         {statCards.map((card, idx) => (
           <div key={idx} className="stat-card">
@@ -247,7 +245,6 @@ const AdminDashboard = () => {
         ))}
       </div>
 
-      {/* Tabs */}
       <div style={{ display: "flex", gap: "4px", marginBottom: "24px", borderBottom: "1px solid var(--border-color)", paddingBottom: "0" }}>
         {tabs.map((tab) => (
           <button
@@ -271,7 +268,6 @@ const AdminDashboard = () => {
         ))}
       </div>
 
-      {/* ── USER MANAGEMENT TAB ── */}
       {activeTab === "users" && (
         <div className="stat-card">
           <div style={{ overflowX: "auto" }}>
@@ -330,7 +326,6 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* ── SYSTEM ACTIVITY TAB ── */}
       {activeTab === "tasks" && (
         <div className="stat-card">
           {tasksLoading ? <Loader /> : (
@@ -391,10 +386,9 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* ── CATEGORIES TAB ── */}
       {activeTab === "categories" && (
         <div style={{ display: "grid", gridTemplateColumns: "340px 1fr", gap: "24px", alignItems: "start" }}>
-          {/* Category Form */}
+
           <div className="stat-card" style={{ position: "sticky", top: "20px" }}>
             <h2 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "20px" }}>
               {editingCatId ? "✏️ Edit Category" : "➕ New Category"}
@@ -494,7 +488,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Preview */}
               <div style={{ padding: "12px 16px", borderRadius: "12px", background: `${catForm.color}15`, border: `1px solid ${catForm.color}30`, display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
                 <span style={{ fontSize: "20px" }}>{catForm.icon}</span>
                 <span style={{ fontWeight: "700", color: catForm.color }}>{catForm.name || "Preview"}</span>
@@ -515,7 +508,6 @@ const AdminDashboard = () => {
             </form>
           </div>
 
-          {/* Category List */}
           <div>
             {categoriesLoading ? <Loader /> : (
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -573,10 +565,9 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* ── SYSTEM INSIGHTS TAB ── */}
       {activeTab === "insights" && (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
-          {/* Status Breakdown */}
+
           <div className="stat-card">
             <h2 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "24px" }}>System-wide Status</h2>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -601,7 +592,6 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Priority Breakdown */}
           <div className="stat-card">
             <h2 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "24px" }}>System-wide Priorities</h2>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>

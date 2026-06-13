@@ -103,13 +103,11 @@ const Navbar = () => {
 
   return (
     <div className="sidebar">
-      {/* Logo */}
       <div className="sidebar-logo">
         <img src="/logo.png" alt="Smart Task Hub" style={{ width: "40px", height: "40px", borderRadius: "10px" }} onError={(e) => { e.target.style.display = "none"; }} />
         <span>Smart Task Hub</span>
       </div>
 
-      {/* User Avatar */}
       <div className="sidebar-user">
         {user.profileImage ? (
           <img src={user.profileImage} alt={user.name} className="sidebar-user-avatar" style={{ objectFit: "cover" }} />
@@ -127,7 +125,6 @@ const Navbar = () => {
         <NotificationDropdown />
       </div>
 
-      {/* Nav Links */}
       <nav className="sidebar-nav">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
@@ -156,7 +153,6 @@ const Navbar = () => {
         })}
       </nav>
 
-      {/* Footer / Logout */}
       <div className="sidebar-footer" style={{ borderTop: "1px solid var(--border-color)", padding: "16px", background: "var(--sidebar-bg)" }}>
         <button onClick={toggleTheme} className="logout-btn" style={{ marginBottom: "10px" }}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

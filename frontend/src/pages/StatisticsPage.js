@@ -27,7 +27,6 @@ const StatisticsPage = () => {
 
   if (loading) return <Loader />;
 
-  // Category breakdown
   const categoryMap = {};
   tasks.forEach((t) => {
     const cat = t.category || "General";
@@ -35,7 +34,6 @@ const StatisticsPage = () => {
   });
   const categories = Object.entries(categoryMap).sort((a, b) => b[1] - a[1]);
 
-  // Priority breakdown
   const priorityMap = { High: 0, Medium: 0, Low: 0 };
   tasks.forEach((t) => {
     if (priorityMap[t.priority] !== undefined) priorityMap[t.priority]++;
@@ -61,7 +59,6 @@ const StatisticsPage = () => {
         </div>
       </div>
 
-      {/* Summary Row */}
       <div className="stats-grid" style={{ marginBottom: "24px" }}>
         {[
           { label: "Total", value: stats?.total ?? 0, color: "var(--accent-primary)" },
@@ -79,7 +76,7 @@ const StatisticsPage = () => {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
-        {/* Priority Bar Chart */}
+
         <div className="stat-card">
           <h2 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "24px" }}>Priority Breakdown</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -112,7 +109,6 @@ const StatisticsPage = () => {
           </div>
         </div>
 
-        {/* Category Breakdown */}
         <div className="stat-card">
           <h2 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "24px" }}>Category Breakdown</h2>
           {categories.length === 0 ? (
@@ -150,7 +146,6 @@ const StatisticsPage = () => {
           )}
         </div>
 
-        {/* Completion Gauge */}
         <div className="stat-card" style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "32px 24px" }}>
           <h2 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "28px", alignSelf: "flex-start" }}>
             Overall Completion
@@ -181,7 +176,6 @@ const StatisticsPage = () => {
           </div>
         </div>
 
-        {/* Status Overview */}
         <div className="stat-card">
           <h2 style={{ fontSize: "18px", fontWeight: "700", marginBottom: "24px" }}>Status Overview</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>

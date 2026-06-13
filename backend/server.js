@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const path = require("path");
 
 const connectDB = require("./config/db");
 
@@ -9,6 +10,9 @@ const taskRoutes = require("./routes/taskRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const noteRoutes = require("./routes/noteRoutes");
+const attachmentRoutes = require("./routes/attachmentRoutes");
+const focusSessionRoutes = require("./routes/focusSessionRoutes");
 
 dotenv.config();
 
@@ -31,12 +35,18 @@ app.use(
   })
 );
 
+// Serve uploaded files statically
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/notes", noteRoutes);
+app.use("/api/attachments", attachmentRoutes);
+app.use("/api/focussessions", focusSessionRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json({
