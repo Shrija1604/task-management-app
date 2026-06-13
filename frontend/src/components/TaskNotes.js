@@ -9,6 +9,7 @@ const TaskNotes = ({ taskId }) => {
 
   useEffect(() => {
     fetchNotes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskId]);
 
   const fetchNotes = async () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getAttachmentsByTask, addAttachment, deleteAttachment } from "../services/attachmentService";
-import { Trash2, Link as LinkIcon, FileText, Upload } from "lucide-react";
+import { Trash2, Link as LinkIcon, FileText } from "lucide-react";
 import toast from "react-hot-toast";
 
 const TaskAttachments = ({ taskId }) => {
@@ -14,6 +14,7 @@ const TaskAttachments = ({ taskId }) => {
 
   useEffect(() => {
     fetchAttachments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskId]);
 
   const fetchAttachments = async () => {
